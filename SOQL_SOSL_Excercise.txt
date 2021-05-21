@@ -1,0 +1,19 @@
+SOQL:
+
+select Id, Name, DOB__c, Sex__c from Student__c where Name like 'S%'
+select Id from Student__c where Class__r.Name like 'X%'
+select Id, Class__r.Id from Student__c
+select Id, (select Id from Students__r) from Class__c
+select  (select Id from Students__r) from Class__c where ClassTeacher__r.Name like 'S%'
+select Id from Student__c where CALENDAR_YEAR(DOB__c) >2000
+select Id,lastmodifieddate from Lead where lastmodifieddate=THIS_MONTH
+select Id, (select Id from Students__r where Name like 'S%') from Class__c
+select Id from Contact where Id IN (select Teacher__c.Id from Teach__c where Subject__c = 'Hindi' and Subject__c ='English') //TBD
+select Name, NumberOfStudents__c from Class__c 
+select CALENDAR_MONTH(DOB__c),COUNT(Id) from Student__c group by CALENDAR_MONTH(DOB__c) order by CALENDAR_MONTH(DOB__c) ASC
+
+
+SOSL:
+
+FIND {Joe} IN NAME FIELDS RETURNING Contact(Name),Student__c(Name)
+FIND {Joe} IN NAME FIELDS RETURNING Contact(Name),Student__c(Name where ex__c IN ('Male'))
