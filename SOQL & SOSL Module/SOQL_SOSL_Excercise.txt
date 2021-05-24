@@ -38,8 +38,7 @@ select CALENDAR_MONTH(DOB__c),COUNT(Id) from Student__c group by CALENDAR_MONTH(
 
 SOSL:
 1. Find all persons with name as “Joe” i.e (Teachers or Students)
-FIND {Joe%} IN NAME FIELDS RETURNING Contact(Name),Student__c(Name)
+FIND {%Joe%}  IN NAME FIELDS RETURNING Contact(Name),Student__c(Name)
 
 2. Find all Male persons with name as “Joe” i.e (Teachers or Students)
-FIND {Joe%} IN NAME FIELDS RETURNING Contact(Name),Student__c(Name where sex__c IN ('Male'))
-
+FIND {%Joe%} IN NAME FIELDS RETURNING Contact(Name where Gender__c='Male'),Student__c(Name where sex__c='Male')
