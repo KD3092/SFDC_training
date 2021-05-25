@@ -1,0 +1,38 @@
+public class SearchStudentsInClass {
+
+    public static List<Student__c> getStudentOfClass(Id classId){
+        List<Student__c> studentList=[SELECT Name FROM Student__c WHERE Class__r.Id=:classId ];
+        return studentList;
+    }
+    
+    public static Map<Class__c,Set<Id>> getStudentPerClass(){
+        Map<Class__c,Set<Id>> classMap=new Map<Class__c,Set<Id>>();
+        Set<ID> studentIdSet=null;
+        List<Class__c> classList=[SELECT Id, (SELECT Id FROM Students__r) FROM Class__c];
+        for(Class__c classObj:classList){
+         	studentIdSet=new Set<ID>();
+            List<Student__c> studentIdList=classObj.Students__r;
+            for(Student__c studentObj:studentIdList){
+                  studentIdSet.add(studentObj.Id);
+            }          
+            classMap.put(classObj,studentIdSet);
+        }
+        return classMap;
+    }
+    
+    public static Integer getWorkingDays(Date startDate,Date endDate){
+         Integer workingDays=0;
+        if(startDate<endDate){
+            for(integer i=0; i <= startDate.daysBetween(endDate); i++){  
+            Date dt = startDate + i;  
+            DateTime currDate = DateTime.newInstance(dt.year(), dt.month(), dt.day());  
+           	String dayName = currDate.format('EEEE');  
+           	//system.debug('dayName :: '+dayName);
+            if(dayName != 'Saturday' && dayName !='Sunday')
+                    workingDays = workingDays + 1;  
+        	}  
+        }     
+       // system.debug('workingDays :: '+workingDays);
+        return workingDays;
+    }
+}
