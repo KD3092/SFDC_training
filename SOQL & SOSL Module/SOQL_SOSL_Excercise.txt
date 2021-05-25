@@ -1,39 +1,39 @@
 SOQL:
 1. Write SOQL Select all student Name,Dob,Sex where LastName starts with “S”
-select Id, Name, DOB__c, Sex__c from Student__c where Name like 'S%'
+SELECT Id, Name, DOB__c, Sex__c FROM Student__c WHERE Name LIKE 'S%'
 
 2. Select All students where ClassName starts with “X”
-select Id from Student__c where Class__r.Name like 'X%'
+SELECT Id,Name FROM Student__c WHERE Class__r.Name LIKE 'X%'
 
 3. Select all Student and ClassName
-select Id, Class__r.Id from Student__c
+SELECT Id,Name, Class__r.Id,Class__r.Name FROM Student__c
 
 4. Select all Classes with students in every class as subquery.
-select Id, (select Id from Students__r) from Class__c
+SELECT Id, Name, (SELECT Id, Name FROM Students__r) FROM Class__c
 
 5. Select all students where class teacher name starts with “S”
-select  (select Id from Students__r) from Class__c where ClassTeacher__r.Name like 'S%'
+SELECT  (SELECT Id, Name FROM Students__r) FROM Class__c WHERE ClassTeacher__r.Name LIKE 'S%'
 
 6.All students where DOB > Year 2000
-select Id from Student__c where CALENDAR_YEAR(DOB__c) >2000
+SELECT Id,Name FROM Student__c WHERE CALENDAR_YEAR(DOB__c) >2000
 
 7.All Leads Where ModifiedDate in current month
-select Id,lastmodifieddate from Lead where lastmodifieddate=THIS_MONTH
+SELECT Id,Name,lastmodifieddate FROM Lead WHERE lastmodifieddate=THIS_MONTH
 
 8. All Classes with Students as subquery where student Name Starts with “S”
-select Id, (select Id from Students__r where Name like 'S%') from Class__c
+SELECT Id,Name, (SELECT Id,Name FROM Students__r WHERE Name LIKE 'S%') FROM Class__c
 
 9. All Teachers who have Hindi and English both subjects
-select Id from Contact where Id IN (select Teacher__c from Teach__c where Subject__c IN ('Hindi','English'))
+SELECT Id, Name FROM Contact WHERE Id IN (SELECT Teacher__c FROM Teach__c WHERE Subject__c IN ('Hindi','English'))
 
 10. All students who have hindi or maths
-select Id from student__c where Class__c IN (select Class__c from Teach__c where Subject__c IN ('Hindi','English'))
+SELECT Id, Name FROM student__c WHERE Class__c IN (SELECT Class__c FROM Teach__c WHERE Subject__c IN ('Hindi','English'))
 
 11. Select no. of students per class
-select Name, NumberOfStudents__c from Class__c 
+SELECT Name, NumberOfStudents__c FROM Class__c 
 
 12. Monthly Birthday Count of students with sorting
-select CALENDAR_MONTH(DOB__c),COUNT(Id) from Student__c group by CALENDAR_MONTH(DOB__c) order by CALENDAR_MONTH(DOB__c) ASC
+SELECT CALENDAR_MONTH(DOB__c),COUNT(Id) FROM Student__c GROUP BY CALENDAR_MONTH(DOB__c) ORDER BY CALENDAR_MONTH(DOB__c) ASC
 
 
 SOSL:
@@ -41,4 +41,4 @@ SOSL:
 FIND {%Joe%}  IN NAME FIELDS RETURNING Contact(Name),Student__c(Name)
 
 2. Find all Male persons with name as “Joe” i.e (Teachers or Students)
-FIND {%Joe%} IN NAME FIELDS RETURNING Contact(Name where Gender__c='Male'),Student__c(Name where sex__c='Male')
+FIND {%Joe%} IN NAME FIELDS RETURNING Contact(Name WHERE Gender__c='Male'),Student__c(Name where sex__c='Male')
