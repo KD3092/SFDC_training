@@ -16,12 +16,18 @@ public class OpportunityNotificationScheduler implements Schedulable {
         }
         
         List<String> toAddressesList=new List<String>();
-        toAddressesList.addAll(toAddresses);
-        system.debug('toAddresses :: '+toAddresses);
-       Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setToAddresses(toAddressesList);
-        mail.setSubject(subject);
-        mail.setHtmlBody(body);
-        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+        new List<String>().addAll(toAddresses);
+        
+        sendEmail(toAddressesList,subject,body);       	        
+    }
+    
+    private void sendEmail(List<String> toAddressesList,String subject,String body){
+        if(toAddressesList!=null && toAddressesList.size()>0 && String.isNotEmpty(subject) && String.isNotEmpty(body)){
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setToAddresses(toAddressesList);
+            mail.setSubject(subject);
+            mail.setHtmlBody(body);
+            Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+   	 	}
     }
 }
