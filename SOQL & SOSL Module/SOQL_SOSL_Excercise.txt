@@ -33,8 +33,7 @@ SELECT Id, Name FROM student__c WHERE Class__c IN (SELECT Class__c FROM Teach__c
 SELECT Name, NumberOfStudents__c FROM Class__c 
 
 12. Monthly Birthday Count of students with sorting
-SELECT CALENDAR_MONTH(DOB__c),COUNT(Id) FROM Student__c GROUP BY CALENDAR_MONTH(DOB__c) ORDER BY CALENDAR_MONTH(DOB__c) ASC
-
+SELECT CALENDAR_MONTH(DOB__c),COUNT(Id) FROM Student__c where DOB__c!=null GROUP BY CALENDAR_MONTH(DOB__c) ORDER BY CALENDAR_MONTH(DOB__c) ASC
 
 SOSL:
 1. Find all persons with name as “Joe” i.e (Teachers or Students)
