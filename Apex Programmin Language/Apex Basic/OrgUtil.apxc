@@ -1,8 +1,8 @@
 public class OrgUtil{
 	public static void printAllSObject(){
-         Map<String, Schema.SObjectType> gd = schema.getGlobalDescribe();
-        for(String names:gd.keySet()){
-            system.debug('SObject :: names :: '+names);
-        }       
-    }
+        	Map<String, Schema.SObjectType> globalDescribe = Schema.getGlobalDescribe();
+		for(String apiNames:globalDescribe.keySet()){
+		    System.debug(' SObject :: apiNames :: '+apiNames);
+		}       
+    	}
 }
