@@ -7,32 +7,26 @@ public class ProcessAccount {
     
     public static void updateAccountForContactIds(Id contactId){
         
-        system.debug('inside contactId :: '+contactId);
-		List<Account> accountList=[SELECT ID,contactids__C,(SELECT ID FROM Contacts) FROM Account 
-                                   WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: contactId) ];  
-         system.debug('inside accountList :: '+accountList);
+	List<Account> accountList=[SELECT ID,contactids__c,(SELECT ID FROM Contacts) FROM Account WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: contactId) ];  
+    
         for(Account account:accountList){
-             system.debug('inside account.contactids__C :: '+account.contactids__C);
-            if(account.contactids__C==null){
+            if(account.contactids__c==null){
                 List<Contact> relatedContacts=account.Contacts;
                 String contactIds='';
-                for(Contact cont:relatedContacts){
-                  contactIds+=cont.Id+',';
+                for(Contact contactObj:relatedContacts){
+                  contactIds+=contactObj.Id+',';
                 }
-                system.debug('beofre :: contactIds :: '+contactIds);
-               contactIds=contactIds.substring(0, contactIds.lastIndexOf(','));
-                system.debug('contactIds :: '+contactIds);
-                account.contactids__C=contactIds;
+              
+               	contactIds=contactIds.substring(0, contactIds.lastIndexOf(','));
+                account.contactids__c=contactIds;
             }else{
-                String contactIds =account.contactids__C;
- 
+                String contactIds =account.contactids__c; 
                 if(contactIds.contains(contactId)){
                     contactIds+=','+contactId;
                 }
-                account.contactids__C=contactIds;
+                account.contactids__c=contactIds;
             }
         }
         update accountList;
     }
-
 }
