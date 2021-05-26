@@ -1,16 +1,14 @@
 public class SearchStudentsInClass {
-
-    public static List<Student__c> getStudentOfClass(Id classId){
-        List<Student__c> studentList=[SELECT Name FROM Student__c WHERE Class__r.Id=:classId ];
-        return studentList;
+	
+	public static List<Student__c> getStudentOfClass(Id classId){
+        return [SELECT Name FROM Student__c WHERE Class__r.Id=:classId ];
     }
     
     public static Map<Class__c,Set<Id>> getStudentPerClass(){
         Map<Class__c,Set<Id>> classMap=new Map<Class__c,Set<Id>>();
-        Set<ID> studentIdSet=null;
         List<Class__c> classList=[SELECT Id, (SELECT Id FROM Students__r) FROM Class__c];
         for(Class__c classObj:classList){
-         	studentIdSet=new Set<ID>();
+         	Set<ID> studentIdSet=new Set<ID>();
             List<Student__c> studentIdList=classObj.Students__r;
             for(Student__c studentObj:studentIdList){
                   studentIdSet.add(studentObj.Id);
@@ -21,18 +19,20 @@ public class SearchStudentsInClass {
     }
     
     public static Integer getWorkingDays(Date startDate,Date endDate){
-         Integer workingDays=0;
-        if(startDate<endDate){
-            for(integer i=0; i <= startDate.daysBetween(endDate); i++){  
-            Date dt = startDate + i;  
-            DateTime currDate = DateTime.newInstance(dt.year(), dt.month(), dt.day());  
-           	String dayName = currDate.format('EEEE');  
-           	//system.debug('dayName :: '+dayName);
-            if(dayName != 'Saturday' && dayName !='Sunday')
+        	Integer workingDays=0;
+        
+            if(startDate>endDate){
+                return workingDays;
+            }
+     
+            for(Integer i=0; i <= startDate.daysBetween(endDate); i++){
+            	Date dateObj = startDate + i;  
+            	DateTime currentDate = DateTime.newInstance(dateObj.year(), dateObj.month(), dateObj.day());  
+           		String dayName = currentDate.format('EEEE');  
+            	
+				if(dayName != 'Saturday' && dayName !='Sunday')
                     workingDays = workingDays + 1;  
         	}  
-        }     
-       // system.debug('workingDays :: '+workingDays);
         return workingDays;
     }
 }
