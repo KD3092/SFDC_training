@@ -1,0 +1,11 @@
+trigger ValidateClassDeleteTrigger on Class__c (before delete) {
+    
+    for(Class__c classObj : [SELECT Id, (SELECT Id FROM Students__r WHERE sex__c='Female') FROM Class__c WHERE ID IN :Trigger.old]){
+        
+        List<Student__c> femaleStudentList = classObj.Students__r;
+        
+        if(femaleStudentList.size()>1)
+            Trigger.oldMap.get(classObj.Id).addError('Cannot delete class with more than one Female Students.');
+    
+    }
+}

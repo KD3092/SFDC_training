@@ -1,0 +1,18 @@
+trigger ValidateStudentInsertTrigger on Student__c (before insert) {
+    Set<Id> classIdSet= new Set<Id>();
+    
+    for(Student__c studentObj : Trigger.new ){   
+    	classIdSet.add(studentObj.Class__c); 
+    }
+    
+ 	Map<Id, Class__c> classObjMap =new Map<Id, Class__c>([SELECT NumberOfStudents__c, Max_Size__c FROM Class__c WHERE ID IN :classIdSet ]); 
+    
+    for(Student__c studentObj : Trigger.new){
+        
+         if(classObjMap.containsKey(studentObj.Class__c)){  
+             if(classObjMap.get(studentObj.Class__c).NumberOfStudents__c >= classObjMap.get(studentObj.Class__c).Max_Size__c)
+            		studentObj.addError('Maximum limit of student has been reached in class. So can not add more Student.');        
+         }
+        
+    }
+}
