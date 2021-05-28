@@ -6,19 +6,23 @@ public class OpportunityNotificationScheduler implements Schedulable {
     }
     
     public void execute(SchedulableContext sc){
-        String sql='SELECT ID, Owner.Email FROM opportunity WHERE lastmodifieddate = LAST_N_DAYS:'+noOfdays;
-        List<opportunity> oppList=Database.query(sql);
-       	String subject='Opportunity Notification';
-        String body='Hi,<br> This notification is to notify that opportunity is not modified from last '+noOfdays+' days.';
-        Set<String> toAddresses=new Set<String>();
-        for(opportunity opp:oppList){
-            toAddresses.add(opp.Owner.Email);
+        String sql='SELECT ID, Owner.Email FROM Opportunity WHERE lastmodifieddate = LAST_N_DAYS :'+noOfdays;
+        List<Opportunity> opportunityObjList = Database.query(sql);
+        
+        if(opportunityObjList.size()>0){
+       		String subject = 'Opportunity Notification';
+       	 	String body = 'Hi,<br> This notification is to notify that opportunity is not modified from last '+noOfdays+' days.';
+        	Set<String> toAddresses = new Set<String>();
+            
+            for(Opportunity opportunityObj:opportunityObjList){
+                toAddresses.add(opportunityObj.Owner.Email);
+            }
+        
+            List<String> toAddressesList=new List<String>();
+            toAddressesList.addAll(toAddresses);
+        
+        	sendEmail(toAddressesList,subject,body);
         }
-        
-        List<String> toAddressesList=new List<String>();
-        new List<String>().addAll(toAddresses);
-        
-        sendEmail(toAddressesList,subject,body);       	        
     }
     
     private void sendEmail(List<String> toAddressesList,String subject,String body){
