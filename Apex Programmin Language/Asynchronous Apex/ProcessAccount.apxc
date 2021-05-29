@@ -7,24 +7,24 @@ public class ProcessAccount {
     
     public static void updateAccountForContactIds(Id contactId){
         
-	List<Account> accountList=[SELECT ID,contactids__c,(SELECT ID FROM Contacts) FROM Account WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: contactId) ];  
-    
-        for(Account account:accountList){
+		List<Account> accountList=[SELECT ID, Contactids__c, (SELECT ID FROM Contacts) FROM Account 
+                                   WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: contactId) ];  
+        
+        for(Account account : accountList){                       
             if(account.contactids__c==null){
-                List<Contact> relatedContacts=account.Contacts;
+                List<Contact> relatedContacts = account.Contacts;
                 String contactIds='';
                 for(Contact contactObj:relatedContacts){
                   contactIds+=contactObj.Id+',';
                 }
-              
-               	contactIds=contactIds.substring(0, contactIds.lastIndexOf(','));
-                account.contactids__c=contactIds;
+                contactIds = contactIds.substring(0, contactIds.lastIndexOf(','));
+                account.contactids__c = contactIds;
             }else{
-                String contactIds =account.contactids__c; 
-                if(contactIds.contains(contactId)){
-                    contactIds+=','+contactId;
+                String contactIds = account.contactids__c;   
+                if(!contactIds.contains(contactId)){
+                    contactIds+= ','+contactId;
                 }
-                account.contactids__c=contactIds;
+                account.contactids__c = contactIds;
             }
         }
         update accountList;
