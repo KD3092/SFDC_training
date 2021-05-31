@@ -1,9 +1,0 @@
-trigger UpdateCloseDateOpportunityTrigger on Opportunity (before update) {
-    
-    for(Opportunity opportunityObj : Trigger.new){
-	
-        if(opportunityObj.StageName!=null && !opportunityObj.StageName.equals(Trigger.oldMap.get(opportunityObj.Id).StageName)  && ('Closed Won'.equals(opportunityObj.StageName)  || 'Closed Lost'.equals(opportunityObj.StageName))){
-               opportunityObj.CloseDate = Date.today();
-           }
-    }
-}
