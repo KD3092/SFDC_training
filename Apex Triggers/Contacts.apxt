@@ -1,0 +1,14 @@
+trigger Contacts on Contact  (before update) {
+    private static final String SUBJECT_HINDI='Hindi';
+    
+    for(Contact contactObj : [ SELECT Id, (SELECT Subject__c FROM Teaches__r) FROM Contact WHERE ID IN :Trigger.new ] ){
+        
+        for(Teach__c teachObj : contactObj.Teaches__r){
+            String subjects=teachObj.Subject__c;
+            
+            if(subjects!=null && subjects.contains(SUBJECT_HINDI))
+                Trigger.newMap.get(contactObj.Id).addError('Update is not allowed as Teacher is teaching Hindi.');
+            
+        }
+    }
+}

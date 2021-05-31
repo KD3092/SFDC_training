@@ -1,0 +1,11 @@
+trigger Opportunities on Opportunity (before update)  {
+    private static final string STAGE_NAME_CLOSED_WON='Closed Won';
+    private static final string STAGE_NAME_CLOSED_LOST='Closed Lost';
+    
+    for(Opportunity opportunityObj : Trigger.new){
+        String stageName = opportunityObj.StageName;
+        if((STAGE_NAME_CLOSED_WON.equals(stageName) || STAGE_NAME_CLOSED_LOST.equals(stageName)) && !stageName.equals(Trigger.oldMap.get(opportunityObj.Id).StageName)){
+            opportunityObj.CloseDate = Date.today();
+        }
+    }
+}
