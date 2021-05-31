@@ -1,0 +1,57 @@
+@isTest
+public class ValidateStudentInsertTriggerTest {
+    private static final string CLASS_NAME='10 A';
+    private static final string STUDENT_NAME='Test Student';
+        
+    @isTest
+    public static void testWhenCurrentStudentCountZero(){
+        Class__c classObj= new Class__c(Name=CLASS_NAME, Max_Size__c=10);
+        insert classObj;
+        
+        List<Student__c> studentList= new List<Student__c>();
+        for(Integer counter=0; counter<15; counter++){
+            studentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
+        }
+        
+        Test.startTest();
+        Database.SaveResult[] saveResultList = Database.insert(studentList,false);
+        Test.stopTest();
+        
+        for(Database.SaveResult saveResult : saveResultList) {
+            System.assert(!saveResult.isSuccess());
+        }
+    }
+    
+    @isTest
+    public static void testWhenCurrentStudentCountNotZero(){
+        Class__c classObj = new Class__c( Name=CLASS_NAME, Max_Size__c=10);
+        insert classObj;
+        
+        List<Student__c> oldStudentList = new List<Student__c>();
+        for(Integer counter=0; counter<5; counter++){
+            oldStudentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
+        }
+        insert oldStudentList;
+        
+        List<Student__c> studentList= new List<Student__c>();
+        for(Integer counter=0; counter<10; counter++){
+            studentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
+        }
+        
+        Test.startTest();
+        Database.SaveResult[] saveResultList = Database.insert(studentList,false);
+        Test.stopTest();
+        
+        Integer successCount=0;
+        Integer failedCount=0;
+        
+        for(Database.SaveResult saveResult : saveResultList) {         
+            if(saveResult.isSuccess())
+                successCount++;
+            else
+                failedCount++;  
+        }
+        System.assertEquals(5, successCount);
+    }
+    
+}

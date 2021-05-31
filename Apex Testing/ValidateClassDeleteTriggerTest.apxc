@@ -1,0 +1,78 @@
+@isTest
+private class ValidateClassDeleteTriggerTest {
+
+    private static final string CLASS_NAME='10 A';
+    private static final string STUDENT_NAME='Test Student';
+    private static final string SEX_FEMALE='Female';
+    private static final string SEX_MALE='Male';
+	
+    @isTest
+    private static void testWithMoreThanOneFemaleStudent(){
+        Class__c classObj= new Class__c(Name=CLASS_NAME);
+        insert classObj;
+        
+        List<Student__c> studentObjList= new List<Student__c>();
+        for(Integer counter=0; counter<10; counter++){
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+        }
+        insert studentObjList;
+        
+        Test.startTest();
+        Database.DeleteResult result = Database.delete(classObj,false);
+        Test.stopTest();
+        
+        System.assert(!result.isSuccess());
+        System.assertEquals('Cannot delete class with more than one Female Students.',result.getErrors()[0].getMessage());
+    }
+    
+    @isTest
+    private static void testWithOnlyOneFemaleStudent(){
+        Class__c classObj= new Class__c(Name=CLASS_NAME);
+        insert classObj;
+        
+        List<Student__c> studentObjList= new List<Student__c>();
+        for(Integer counter=0; counter<10; counter++){
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_MALE, Class__c=classObj.Id));
+        }
+        
+        studentObjList.add(new Student__c(Name=STUDENT_NAME, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+        
+        insert studentObjList;
+        
+        Test.startTest();
+        Database.DeleteResult result= Database.delete(classObj,false);
+        Test.stopTest();
+        
+        System.assert(result.isSuccess());
+    }
+    
+    
+    @isTest
+    private static void testBulkDelete(){
+        
+        List<Class__c> classObjList= new List<Class__c>();
+        for(Integer counter=0; counter<100; counter++){
+            classObjList.add(new Class__c(Name=CLASS_NAME+' '+counter));
+        }
+        insert classObjList;
+        
+        List<Student__c> studentObjList= new List<Student__c>();
+        for(Class__c classObj : classObjList){
+            for(Integer counter=0; counter<10; counter++){
+                studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+            }
+        }
+        insert studentObjList;
+        
+        Test.startTest();
+        Database.DeleteResult[] deleteResultList= Database.delete(classObjList,false);
+        Test.stopTest();
+        
+        for(Database.DeleteResult deleteResult : deleteResultList){
+            System.assert(!deleteResult.isSuccess());
+            System.assertEquals('Cannot delete class with more than one Female Students.',deleteResult.getErrors()[0].getMessage());
+        }
+        
+    }
+    
+}
