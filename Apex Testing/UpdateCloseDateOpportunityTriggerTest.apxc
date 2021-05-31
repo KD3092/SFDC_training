@@ -1,0 +1,97 @@
+@isTest
+private class UpdateCloseDateOpportunityTriggerTest {
+    private static final String OPPORTUNITY_NAME='Test Opportunity';
+    private static final String STAGE_NAME_QUALIFICATION='Qualification';
+    private static final String STAGE_NAME_CLOSED_WON='Closed Won';
+    private static final String STAGE_NAME_CLOSED_LOST='Closed Lost';
+    private static final String STAGE_NAME_VALUE_PROPOSITION='Value Proposition';
+    
+    @testSetup
+    private static void setup(){
+        Opportunity opportunityObj = new Opportunity(Name = OPPORTUNITY_NAME, StageName = STAGE_NAME_QUALIFICATION, CloseDate = Date.newInstance(2021, 05, 05));
+        insert opportunityObj;
+    }       
+    
+    @isTest
+    private static void testWithStageClosedWon(){
+        
+        List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityList){
+            opportunityObj.StageName= STAGE_NAME_CLOSED_WON;
+        }
+        
+        Test.startTest();
+        update opportunityList;        
+        Test.stopTest();        
+        
+        List<Opportunity> opportunityListAfterUpdate=  [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityListAfterUpdate){
+            System.assertEquals(Date.today(), opportunityObj.CloseDate);
+        }  
+    }
+    
+    @isTest
+    private static void testWithStageClosedLost(){
+        List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityList){
+            opportunityObj.StageName=STAGE_NAME_CLOSED_LOST;
+        }
+        
+        Test.startTest();
+        update opportunityList;        
+        Test.stopTest();       
+        
+        List<Opportunity> opportunityListAfterUpdate=  [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityListAfterUpdate){
+            System.assertEquals(Date.today(), opportunityObj.CloseDate);
+        }  
+    }
+    
+    @isTest
+    private static void testWithStageOtherThanClosedLost_CLosedWon(){
+        List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityList){
+            opportunityObj.StageName = STAGE_NAME_VALUE_PROPOSITION;
+        }
+        
+        Test.startTest();
+        update opportunityList;        
+        Test.stopTest();        
+        
+        List<Opportunity> opportunityListAfterUpdate=  [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityListAfterUpdate){
+            System.assertEquals(Date.newInstance(2021, 05, 05), opportunityObj.CloseDate);
+        }  
+    }
+    
+    @isTest
+    private static void testWithStageHavingSameValues(){
+        List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityList){
+            opportunityObj.StageName = STAGE_NAME_CLOSED_LOST;
+        }
+        update opportunityList;
+        
+        for(Opportunity opportunityObj : opportunityList){
+            opportunityObj.CloseDate = Date.newInstance(2021, 06, 20);
+        }
+        
+        Test.startTest();
+        update opportunityList;    
+        Test.stopTest();        
+        
+        List<Opportunity> opportunityListAfterUpdate=  [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
+        
+        for(Opportunity opportunityObj : opportunityListAfterUpdate){
+            System.assertEquals(Date.newInstance(2021, 06, 20), opportunityObj.CloseDate);
+        }  
+    }
+    
+}

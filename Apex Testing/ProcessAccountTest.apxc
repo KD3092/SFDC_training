@@ -1,0 +1,51 @@
+@isTest
+private class ProcessAccountTest {
+    private static final String ACCOUNT_NAME='Test Account';
+    private static final String CONTACT_NAME='Test Contact';
+    private static final String OPPORTUNITY_NAME='Test Opportunity';
+    
+    @isTest
+    private static void updateAccountForContactIdsAsynchTest(){
+        Account accountObj= new Account(Name=ACCOUNT_NAME);
+        insert accountObj;
+        
+        Contact contactObj= new Contact(LastName=CONTACT_NAME, AccountId=accountObj.Id);
+        insert contactObj;
+        
+        Test.startTest();
+        ProcessAccount.updateAccountForContactIdsAsynch(contactObj.Id);
+        Test.stopTest();
+        
+        for(Account account : [SELECT ID, Contactids__c, (SELECT ID FROM Contacts) FROM Account WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: contactObj.Id)]){
+            System.assert(account.contactids__c!=null);           
+            System.assert(account.contactids__c.contains(contactObj.Id));
+        }
+    }
+    
+    @isTest
+    private static void updateAccountForContactIdsAsynchTestWithNotNUllContactids(){
+        Account accountObj= new Account(Name=ACCOUNT_NAME);
+        insert accountObj;
+        
+        List<Contact> contactObjList = new List<Contact>();
+        for(Integer counter=0; counter<10; counter++){
+            contactObjList.add(new Contact(LastName=CONTACT_NAME+' '+counter, AccountId=accountObj.Id));
+        }
+        insert contactObjList;
+        
+        ProcessAccount.updateAccountForContactIds(contactObjList[0].Id);
+        
+        Contact newContactObj = new Contact(LastName=CONTACT_NAME, AccountId=accountObj.Id);
+        insert newContactObj;
+        
+        Test.startTest();
+        ProcessAccount.updateAccountForContactIdsAsynch(newContactObj.Id);
+        Test.stopTest();
+        
+        for(Account account : [SELECT ID, Contactids__c, (SELECT ID FROM Contacts) FROM Account WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: newContactObj.Id)]){
+            System.assert(account.contactids__c!=null);           
+            System.assert(account.contactids__c.contains(newContactObj.Id));
+        }
+    }
+    
+}

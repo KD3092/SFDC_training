@@ -1,0 +1,51 @@
+@isTest
+private class RejectHindiTeacherTriggerTest {
+    private static final String CLASS_NAME='10 A';
+    private static final String TEACHER_NAME='Test Teacher';
+    private static final String TEACH_NAME='Test Teach';
+    private static final String SUBJECT_LIST_WITH_HINDI='English;Hindi;Science';
+    private static final String SUBJECT_LIST_WITHOUT_HINDI='English;Math';
+    
+    @isTest
+    private static void testWithSubjectHindi(){
+        
+        Contact contactObj= new Contact(LastName=TEACHER_NAME);
+        insert contactObj;
+        
+        Class__c classObj= new Class__c(Name=CLASS_NAME);
+        insert classObj;       
+        
+        Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactObj.Id, Class__c=classObj.Id, Subject__c=SUBJECT_LIST_WITH_HINDI);
+        insert teachObj;
+        
+        contactObj.Description='Adding Description';
+        
+        Test.startTest();
+        Database.SaveResult result=Database.update(contactObj,false);
+        Test.stopTest();
+        
+        System.assert(!result.isSuccess());
+        System.assertEquals('Update is not allowed as Teacher is teaching Hindi.',result.getErrors()[0].getMessage());
+    }
+    
+    @isTest
+    private static void testWithoutSubjectHindi(){
+        
+        Contact contactObj= new Contact(LastName=TEACHER_NAME);
+        insert contactObj;
+        
+        Class__c classObj= new Class__c(Name=CLASS_NAME);
+        insert classObj;       
+        
+        Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactObj.Id, Class__c=classObj.Id, Subject__c=SUBJECT_LIST_WITHOUT_HINDI);
+        insert teachObj;
+        
+        contactObj.Description='Adding Description';
+        
+        Test.startTest();
+        Database.SaveResult result=Database.update(contactObj,false);
+        Test.stopTest();
+        
+        System.assert(result.isSuccess());
+    }
+}

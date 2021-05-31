@@ -1,0 +1,61 @@
+@isTest
+private class SearchStudentsInClassTest {
+    private static final String CLASS_NAME='10 A';
+    private static final String STUDENT_NAME='Test Student';
+    private static final String SEX_FEMALE='Female';
+    
+    @isTest
+    private static void getStudentOfClassTest(){
+        
+        Class__c classObj= new Class__c(Name=CLASS_NAME);
+        insert classObj;
+        
+        List<Student__c> studentObjList= new List<Student__c>();
+        for(Integer counter=0; counter<10; counter++){
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+        }
+        insert studentObjList;
+        
+        Test.startTest();
+        List<Student__c> returnStudentList= SearchStudentsInClass.getStudentOfClass(classObj.Id);
+        Test.stopTest();
+        
+        System.assertEquals(studentObjList.size(), returnStudentList.size());        
+    }
+    
+    @isTest
+    private static void getStudentPerClassTest(){
+        
+        Class__c classObj= new Class__c(Name=CLASS_NAME);
+        insert classObj;
+        
+        List<Student__c> studentObjList = new List<Student__c>();
+        for(Integer counter=0; counter<10; counter++){
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+        }
+        insert studentObjList;
+        
+        Test.startTest();
+        Map<Class__c,Set<Id>> classMap= SearchStudentsInClass.getStudentPerClass();
+        Test.stopTest();
+        
+        for(Class__c mapClassObj :  classMap.keySet()){
+            System.assertEquals(mapClassObj.Id,classObj.Id); 
+        }      
+    }
+    
+    @isTest
+    private static void getWorkingDaysTest(){
+        
+        Date startDate=Date.newInstance(2021, 05, 25);
+        Date endDate=Date.newInstance(2021, 05, 31);
+        Integer expectedWorkingDays=5;
+        
+        Test.startTest();
+        Integer workingDays= SearchStudentsInClass.getWorkingDays(startDate,endDate);
+        Test.stopTest();
+        
+        System.assertEquals(expectedWorkingDays, workingDays);     
+    }
+    
+}
