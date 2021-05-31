@@ -9,7 +9,7 @@ public class ValidateStudentInsertTriggerTest {
         insert classObj;
         
         List<Student__c> studentList= new List<Student__c>();
-        for(Integer counter=0; counter<15; counter++){
+        for(Integer counter=0; counter<5; counter++){
             studentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
         }
         
@@ -18,7 +18,7 @@ public class ValidateStudentInsertTriggerTest {
         Test.stopTest();
         
         for(Database.SaveResult saveResult : saveResultList) {
-            System.assert(!saveResult.isSuccess());
+            System.assert(saveResult.isSuccess());
         }
     }
     
