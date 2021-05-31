@@ -1,28 +1,38 @@
 public class OpportunityNotificationScheduler implements Schedulable {
-
+    
     private Integer noOfdays=30;
-    OpportunityNotificationScheduler(Integer noOfdays){
+    public OpportunityNotificationScheduler(Integer noOfdays){
         this.noOfdays=noOfdays;
     }
     
     public void execute(SchedulableContext sc){
-        String sql='SELECT ID, Owner.Email FROM Opportunity WHERE lastmodifieddate = LAST_N_DAYS :'+noOfdays;
+        String subject = 'Opportunity Notification';
+        String body = 'Hi,<br> This notification is to notify that opportunity is not modified from last '+noOfdays+' days.';
+        
+        List<String> toAddressesList =	getOpportunityOwnerEmailIds();
+        if(!toAddressesList.isEmpty())
+            sendEmail(toAddressesList,subject,body);
+        
+    }
+    
+    @testVisible
+    private List<String> getOpportunityOwnerEmailIds(){
+        String sql=' SELECT ID, Owner.Email FROM Opportunity WHERE lastmodifieddate = LAST_N_DAYS :'+noOfdays;
         List<Opportunity> opportunityObjList = Database.query(sql);
         
-        if(opportunityObjList.size()>0){
-       		String subject = 'Opportunity Notification';
-       	 	String body = 'Hi,<br> This notification is to notify that opportunity is not modified from last '+noOfdays+' days.';
-        	Set<String> toAddresses = new Set<String>();
-            
-            for(Opportunity opportunityObj:opportunityObjList){
-                toAddresses.add(opportunityObj.Owner.Email);
-            }
+        if(opportunityObjList.isEmpty())
+            return new List<String>();
         
-            List<String> toAddressesList=new List<String>();
-            toAddressesList.addAll(toAddresses);
+        Set<String> toAddresses = new Set<String>();
         
-        	sendEmail(toAddressesList,subject,body);
+        for(Opportunity opportunityObj:opportunityObjList){
+            toAddresses.add(opportunityObj.Owner.Email);
         }
+        
+        List<String> toAddressesList=new List<String>();
+        toAddressesList.addAll(toAddresses);
+        
+        return toAddressesList;
     }
     
     private void sendEmail(List<String> toAddressesList,String subject,String body){
@@ -32,6 +42,6 @@ public class OpportunityNotificationScheduler implements Schedulable {
             mail.setSubject(subject);
             mail.setHtmlBody(body);
             Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
-   	 	}
+        }
     }
 }
