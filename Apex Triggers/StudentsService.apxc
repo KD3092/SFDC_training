@@ -1,0 +1,44 @@
+public class StudentsService {
+    private static final String ERROR_MSG='Maximum limit of student has been reached in class. So can not add more Student.';
+    
+    public static void updateMyCount(List<Student__c> studentList){
+        Set<Id> classIdSet=new Set<Id>();
+        
+        for(Student__c studentObj : studentList){
+            classIdSet.add(studentObj.Class__c);
+        }
+        
+        List<Class__c> classObjList=[ SELECT Id, (SELECT Id FROM Students__r) FROM Class__c WHERE Id IN :classIdSet];
+        
+        for(Class__c classObj : classObjList){
+            List<Student__c> studentObjList= classObj.Students__r;  
+            classObj.MyCount__c=studentObjList.size();
+        }
+        
+        update classObjList;
+    }
+    
+    public static void validateStudentInsert(List<Student__c> studentList){
+        Set<Id> classIdSet= new Set<Id>();            
+        for(Student__c studentObj : studentList){   
+            classIdSet.add(studentObj.Class__c); 
+        }
+        
+        Map<Id, Class__c> classObjMap =new Map<Id, Class__c>([SELECT NumberOfStudents__c, Max_Size__c FROM Class__c WHERE ID IN :classIdSet ]); 
+        Integer newDataCount=0;
+        for(Student__c studentObj : studentList){        
+            
+            if(classObjMap.containsKey(studentObj.Class__c)){
+                newDataCount++;
+                
+                Class__c classObj=classObjMap.get(studentObj.Class__c);
+                Integer numberOfCurrentStudent=(Integer)classObj.NumberOfStudents__c;             
+                Integer futureStudentCount=numberOfCurrentStudent+newDataCount;
+                
+                if(numberOfCurrentStudent >= classObj.Max_Size__c || futureStudentCount > classObj.Max_Size__c)
+                    studentObj.addError(ERROR_MSG);        
+                
+            }                
+        }
+    }    
+}
