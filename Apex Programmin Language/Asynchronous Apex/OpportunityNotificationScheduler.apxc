@@ -9,36 +9,35 @@ public class OpportunityNotificationScheduler implements Schedulable {
         String subject = 'Opportunity Notification';
         String body = 'Hi,<br> This notification is to notify that opportunity is not modified from last '+noOfdays+' days.';
         
-        List<String> toAddressesList =	getOpportunityOwnerEmailIds();
+        Set<String> toAddressesList =	getOpportunityOwnerEmailIds();
         if(!toAddressesList.isEmpty())
             sendEmail(toAddressesList,subject,body);
         
     }
     
     @testVisible
-    private List<String> getOpportunityOwnerEmailIds(){
+    private Set<String> getOpportunityOwnerEmailIds(){
         String sql=' SELECT ID, Owner.Email FROM Opportunity WHERE lastmodifieddate = LAST_N_DAYS :'+noOfdays;
         List<Opportunity> opportunityObjList = Database.query(sql);
         
         if(opportunityObjList.isEmpty())
-            return new List<String>();
+            return new Set<String>();
         
-        Set<String> toAddresses = new Set<String>();
+        Set<String> toAddressesSet = new Set<String>();
         
         for(Opportunity opportunityObj:opportunityObjList){
-            toAddresses.add(opportunityObj.Owner.Email);
+            toAddressesSet.add(opportunityObj.Owner.Email);
         }
-        
-        List<String> toAddressesList=new List<String>();
-        toAddressesList.addAll(toAddresses);
-        
-        return toAddressesList;
+                
+        return toAddressesSet;
     }
     
-    private void sendEmail(List<String> toAddressesList,String subject,String body){
-        if(toAddressesList!=null && toAddressesList.size()>0 && String.isNotEmpty(subject) && String.isNotEmpty(body)){
+    private void sendEmail(Set<String> toAddressSet,String subject,String body){
+        if(!toAddressSet.isEmpty() && String.isNotEmpty(subject) && String.isNotEmpty(body)){
+            List<String> toAddressList= new List<String>();
+            toAddressList.addAll(toAddressSet);
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(toAddressesList);
+            mail.setToAddresses(toAddressList);
             mail.setSubject(subject);
             mail.setHtmlBody(body);
             Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
