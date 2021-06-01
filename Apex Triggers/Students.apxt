@@ -1,36 +1,11 @@
 trigger Students on Student__c (before insert, after insert, after update) {
     
-    switch on Trigger.operationType {
-        
-        when BEFORE_INSERT {
-            Set<Id> classIdSet= new Set<Id>();            
-            for(Student__c studentObj : Trigger.new ){   
-                classIdSet.add(studentObj.Class__c); 
-            }
-            
-            Map<Id, Class__c> classObjMap =new Map<Id, Class__c>([SELECT NumberOfStudents__c, Max_Size__c FROM Class__c WHERE ID IN :classIdSet ]); 
-            Integer newDataCount=0;
-            for(Student__c studentObj : Trigger.new){        
-                
-                if(classObjMap.containsKey(studentObj.Class__c)){
-                    newDataCount++;
-                    
-                    Class__c classObj=classObjMap.get(studentObj.Class__c);
-                    Integer numberOfCurrentStudent=(Integer)classObj.NumberOfStudents__c;             
-                    Integer futureStudentCount=numberOfCurrentStudent+newDataCount;
-                    
-                    if(numberOfCurrentStudent >= classObj.Max_Size__c || futureStudentCount > classObj.Max_Size__c)
-                        studentObj.addError('Maximum limit of student has been reached in class. So can not add more Student.');        
-                    
-                }                
-            }
+    if(Trigger.isBefore && Trigger.isInsert){
+        StudentsService.validateStudentInsert(Trigger.new);
+    }else if(Trigger.isAfter){
+        if(Trigger.isInsert || Trigger.isUpdate){
+            StudentsService.updateMyCount(Trigger.new);
         }
-        when AFTER_INSERT {
-            UpdateMyCountInClass.updateMyCount(Trigger.new);
-        }        
-        when AFTER_UPDATE {
-            UpdateMyCountInClass.updateMyCount(Trigger.new);
-        }
-        
     }
+    
 }
