@@ -1,21 +1,8 @@
 trigger Classes on Class__c (before delete,after update) {
     
-    private static final String SEX_FEMALE='Female';
-    private static final Integer MAX_FEMALE_COUNT=1;    
-    
-    switch on Trigger.operationType {
-        when AFTER_UPDATE {
-            ResetClassStudent.resetStudentInClass(Trigger.new, Trigger.oldMap);
-        }
-        when BEFORE_DELETE {
-            
-            for(Class__c classObj : [SELECT Id, (SELECT Id FROM Students__r WHERE sex__c=:SEX_FEMALE) FROM Class__c WHERE ID IN :Trigger.old]){
-                
-                List<Student__c> femaleStudentList=classObj.Students__r;                
-                if(femaleStudentList.size()>MAX_FEMALE_COUNT)
-                    Trigger.oldMap.get(classObj.Id).addError('Cannot delete class with more than one Female Students.');
-                
-            }
-        }
-    }
+    if(Trigger.isBefore && Trigger.isDelete){
+        ClassesService.validateClassDelete(Trigger.old,Trigger.oldMap);
+    }else if(Trigger.isAfter && Trigger.isUPdate){
+        ClassesService.resetStudentInClass(Trigger.new, Trigger.oldMap);
+    }      
 }
