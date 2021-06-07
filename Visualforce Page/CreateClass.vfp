@@ -1,0 +1,39 @@
+<apex:page standardController="Class__c" tabStyle="Class__c">
+    
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>New Class</title>
+        <apex:slds />
+    </head>
+    <body>    
+        <apex:form >
+            <apex:pageMessages ></apex:pageMessages>
+            <apex:pageBlock title="Class">
+                <apex:pageBlockSection >
+                    <apex:inputField value="{!Class__c.Name}" required="true" />
+                    <apex:inputField value="{!Class__c.Board__c}"/>
+                </apex:pageBlockSection>           
+                <apex:pageBlockSection >
+                    <apex:inputField value="{!Class__c.ClassTeacher__c}"/>
+                    <apex:inputField value="{!Class__c.Fee__c}"/>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection >
+                    <apex:inputField value="{!Class__c.Max_Size__c}"/>
+                    <apex:inputField value="{!Class__c.MyCount__c}"/>
+                </apex:pageBlockSection>            
+                <apex:pageBlockSection >
+                    <apex:inputField value="{!Class__c.Custom_Status__c}"/>                    
+                    <apex:inputField value="{!Class__c.DetailedDescription__c}"/>                    
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockButtons >
+                    <apex:commandButton action="{!save}" value="Save"/>
+                    <apex:commandButton action="{!cancel}" value="Cancel"/>
+                </apex:pageBlockButtons>
+                
+            </apex:pageBlock>
+            
+        </apex:form>
+    </body>
+</apex:page>

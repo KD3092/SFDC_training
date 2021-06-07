@@ -1,0 +1,24 @@
+<apex:page controller="BillToContactController">
+    <apex:form >        
+        <apex:pageBlock id="ContactListTable" title="Select Contact">
+            <apex:pageMessages id="pageMessage"></apex:pageMessages>
+            
+            <apex:pageBlockTable value="{!contactList}" var="contact">
+                <apex:column width="10px">                    
+                    <apex:actionSupport event="onclick" action="{!setselectedContactId}" rerender="true">
+                        <input type="radio" required="true"/>  
+                        <apex:param name="contactId" value="{!contact.Id}"/>
+                    </apex:actionSupport>
+                </apex:column>
+                <apex:column value="{!contact.Name}" />
+            </apex:pageBlockTable>
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton reRender="AccountListTable" value="Save" action="{!save}" rerender="pageMessage" />
+                <apex:commandButton reRender="AccountListTable" value="Clear" action="{!clear}" />
+                <apex:commandButton reRender="AccountListTable" value="Cancel" action="{!cancel}" />
+            </apex:pageBlockButtons>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

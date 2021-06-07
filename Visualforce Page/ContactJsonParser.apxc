@@ -1,0 +1,13 @@
+public class ContactJsonParser {
+    
+    public List<String> getContactListJson(){
+        List<String> contactListJson= new  List<String>();
+        
+        for(Contact contactObj: [SELECT Id, Name FROM Contact]){
+            contactListJson.add(JSON.serialize(contactObj,true));
+        }
+        
+        return contactListJson;
+    }
+    
+}

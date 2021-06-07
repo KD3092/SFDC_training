@@ -1,0 +1,15 @@
+<apex:page standardController="Contact">
+    <style>
+        .header{
+        text-align: center;
+        background-color: blue;
+        color: white;
+        font-size: 20px;
+        padding: 8px;
+        }
+    </style>
+    <div class="header" style="text-align:center;">
+        <div>{!Contact.RecordType.Name} Teacher</div>
+    </div>
+    
+</apex:page>

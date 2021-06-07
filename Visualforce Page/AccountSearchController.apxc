@@ -1,0 +1,64 @@
+public class AccountSearchController {
+    public Integer noOfAccountToShow { get; set; }
+    public String billingCity { get; set; }
+    public String billingState { get; set; }
+    public String billingCountry { get; set; }
+    public static final Integer DEFAULT_PAGE_SIZE=10;
+    public static final String SQL=' SELECT Name, BillingCity, BillingState, BillingCountry FROM Account ';
+    
+    public List<Account> accountList{ 
+        get{
+            return (List<Account>)setControllerObj.getRecords();
+        } set; }
+    
+    
+    public ApexPages.StandardSetController setControllerObj {
+        get {
+            if(setControllerObj==null){
+                setControllerObj = new ApexPages.StandardSetController(Database.getQueryLocator(sql));
+                setControllerObj.setPageSize(DEFAULT_PAGE_SIZE); 
+            }
+            return setControllerObj;
+        }
+        set;
+    }    
+    
+    public void search() {      
+        String sqlCondition='';
+        if(!String.isEmpty(billingCity)){
+            sqlCondition+=' BillingCity=\''+billingCity+'\'';
+        }
+        
+        if(!String.isEmpty(billingState)){
+            if(!String.isEmpty(sqlCondition))
+                sqlCondition+=' AND ';
+            
+            sqlCondition+=' BillingState=\''+billingState+'\'';
+        }
+        
+        if(!String.isEmpty(billingCountry)){
+            if(!String.isEmpty(sqlCondition))
+                sqlCondition+=' AND ';
+            
+            sqlCondition+=' BillingCountry=\''+billingCountry+'\'';
+        }
+        
+        String query=SQL;
+        if(!String.isEmpty(sqlCondition)){
+            query+=' WHERE '+sqlCondition;
+        }
+        
+        setControllerObj = new ApexPages.StandardSetController(Database.getQueryLocator(query));
+        if(noOfAccountToShow!=null && noOfAccountToShow!=0)
+            setControllerObj.setPageSize(noOfAccountToShow);  
+        else
+            setControllerObj.setPageSize(DEFAULT_PAGE_SIZE);     
+    } 
+    
+    public PageReference reset() {
+        PageReference newpage = new PageReference(System.currentPageReference().getURL());    
+        newpage.getParameters().clear();
+        newpage.setRedirect(true);
+        return newpage;
+    }
+}

@@ -1,0 +1,38 @@
+<apex:page controller="AccountSearchController">
+    <apex:form >
+        <apex:pageBlock title="Account Search">
+            <apex:pageBlockSection >
+                <apex:inputText value="{!noOfAccountToShow}" label="No Of Account To Show"  />
+                <apex:inputText value="{!billingCity}" label="Billing City"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection >
+                <apex:inputText value="{!billingState}" label="Billing State"/>
+                <apex:inputText value="{!billingCountry}" label="Billing Country"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton reRender="AccountListTable" value="Search" action="{!search }" />
+                <apex:commandButton reRender="AccountListTable" value="Reset" action="{!reset }" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>        
+        
+        
+        <apex:pageBlock id="AccountListTable">        
+            <apex:pageBlockTable value="{!accountList}" var="acc" >
+                <apex:column value="{!acc.Name}"/>
+                <apex:column value="{!acc.BillingCity}"/>
+                <apex:column value="{!acc.BillingState}"/>
+                <apex:column value="{!acc.BillingCountry}"/>
+            </apex:pageBlockTable>
+            <table style="width: 100%">
+                <tr>
+                    <td align="center">
+                        <apex:commandButton reRender="AccountListTable" value="First" action="{!setCon.first}" disabled="{!!setCon.hasPrevious}"/>
+                        <apex:commandButton reRender="AccountListTable" value="Previous" action="{!setCon.previous}" disabled="{!!setCon.hasPrevious}"/>
+                        <apex:commandButton reRender="AccountListTable" value="Next" action="{!setCon.next}" disabled="{!!setCon.hasNext}"/>
+                        <apex:commandButton reRender="AccountListTable" value="Last" action="{!setCon.last}" disabled="{!!setCon.hasNext}"/>
+                    </td>
+                </tr>
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

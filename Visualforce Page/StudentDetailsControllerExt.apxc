@@ -1,0 +1,26 @@
+public class StudentDetailsControllerExt {
+    
+    private final Student__c studentObj; 
+    private static final String PDF_FILE_NAME='StudentDetails.pdf';
+    
+    public StudentDetailsControllerExt(ApexPages.StandardController standardPageController) {
+        studentObj = (Student__c)standardPageController.getRecord();        
+    }
+    
+    public PageReference generatePDF() {     
+        PageReference pdfPage = Page.StudentDetails;        
+        pdfPage.getParameters().put('id', studentObj.Id);      
+        Blob pdfBlob = pdfPage.getContent();
+        
+        List<Attachment> attachmentList=[SELECT Id FROM Attachment WHERE parentId=:studentObj.Id AND Name=:PDF_FILE_NAME];
+        if(!attachmentList.isEmpty())
+            delete attachmentList;
+        
+        Attachment attachmentFile = new Attachment(parentId = studentObj.Id, Name = PDF_FILE_NAME, body = pdfBlob);
+        insert attachmentFile; 
+        
+        PageReference studentDetailPage = new ApexPages.StandardController(studentObj).view();
+        studentDetailPage.setRedirect(true); 
+        return studentDetailPage;
+    }
+}

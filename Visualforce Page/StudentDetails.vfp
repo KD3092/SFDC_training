@@ -1,0 +1,24 @@
+<apex:page standardController="Student__c" showHeader="false" standardStylesheets="false" renderAs="pdf">   
+    <body>       
+        <table>
+            <tr><th>Student Name</th>
+                <td><apex:outputText value="{!Student__c.Name}"/></td>
+            </tr>
+            <tr><th>Gender</th>
+                <td><apex:outputText value="{!Student__c.Sex__c}"/></td>
+            </tr>
+            <tr><th>Age</th>
+                <td><apex:outputText value="{!Student__c.Age__c}"/></td>
+            </tr>
+            <tr><th>Class</th>
+                <td><apex:outputText value="{!Student__c.Class__r.Name}"/></td>
+            </tr>
+            <tr><th>DOB</th>
+                <td><apex:outputText value="{!Student__c.DOB__c}"/></td>
+            </tr>
+            <tr><th>Email</th>
+                <td><apex:outputText value="{!Student__c.Email__c}"/></td>
+            </tr>            
+        </table>
+    </body>
+</apex:page>

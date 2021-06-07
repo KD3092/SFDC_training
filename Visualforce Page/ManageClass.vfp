@@ -1,0 +1,77 @@
+<apex:page controller="ManageClassController">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Manage Class</title>
+        <apex:slds />
+        <script>
+        function hidePageMessages(){
+            document.getElementById('pageMessagesDiv').style.display = "none";
+        }
+        </script>
+    </head>
+    <body> 
+        <apex:form >
+            <apex:actionFunction action="{!deleteClass}" name="deleteClassFunction" rerender="classListTable">
+                <apex:param name="id" assignTo="{!classId}" value="" />
+            </apex:actionFunction>
+            
+            <apex:actionFunction action="{!saveClass}" name="saveClassFunction" rerender="classListTable"/>
+            
+            <apex:actionFunction action="{!showEdit}" name="showEditFunction" rerender="classListTable">
+                <apex:param name="id" assignTo="{!classId}" value="" />
+            </apex:actionFunction>
+            
+            <apex:actionFunction action="{!cancelEdit}" name="canelEditSection" rerender="classListTable"/>
+            
+            <apex:pageBlock title="Manage Class" id="classListTable">
+                <div id="pageMessagesDiv" onClick="hidePageMessages();">
+                    <apex:pageMessages ></apex:pageMessages>
+                </div>
+                
+                <apex:pageBlockTable value="{!classList}" var="class">
+                    <apex:column value="{!class.Name}" />
+                    <apex:column value="{!class.Board__c}" />
+                    <apex:column value="{!class.Custom_Status__c}" />
+                    <apex:column >
+                        <apex:outputLink value="javascript:showEditFunction('{!class.Id}');">
+                            Edit
+                        </apex:outputLink>   
+                    </apex:column>
+                    <apex:column >
+                        <apex:outputLink value="javascript:if (window.confirm('Are you sure?')) deleteClassFunction('{!class.Id}');">
+                            Delete
+                        </apex:outputLink>                
+                    </apex:column>     
+                </apex:pageBlockTable>
+                <apex:pageBlockSection columns="1" title="Edit Class" rendered="{!showEditSection}" collapsible="false">
+                    <apex:pageBlockSection rendered="{!showEditSection}">
+                        <apex:inputField value="{!classObj.Name}" />
+                        <apex:inputField value="{!classObj.Board__c}"/>
+                    </apex:pageBlockSection> 
+                    
+                    <apex:pageBlockSection rendered="{!showEditSection}">
+                        <apex:inputField value="{!classObj.ClassTeacher__c}"/>
+                        <apex:inputField value="{!classObj.Fee__c}"/>
+                    </apex:pageBlockSection>
+                    
+                    <apex:pageBlockSection rendered="{!showEditSection}">
+                        <apex:inputField value="{!classObj.Max_Size__c}"/>
+                        <apex:inputField value="{!classObj.MyCount__c}"/>
+                    </apex:pageBlockSection> 
+                    
+                    <apex:pageBlockSection rendered="{!showEditSection}" >
+                        <apex:inputField value="{!classObj.Custom_Status__c}"/>                    
+                        <apex:inputField value="{!classObj.DetailedDescription__c}"/>                    
+                    </apex:pageBlockSection>
+                    
+                    <apex:pageBlockSectionItem rendered="{!showEditSection}" id="editSectionBtnDiv" dataStyle="text-align: center;" >
+                        <apex:outputPanel onclick="javascript:saveClassFunction();" styleClass="btn" >
+                            Save
+                        </apex:outputPanel> 
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form> 
+    </body>
+</apex:page>

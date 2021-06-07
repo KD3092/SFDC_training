@@ -1,0 +1,55 @@
+public class ManageClassController {
+    
+    public String classId;
+    public Class__c classObj{get;set;}
+    public Boolean showEditSection{get;set;}    
+    public void setClassId(String id) {
+        classId = id;
+    }
+    
+    public String getClassId() {
+        return classId;
+    }
+    
+    public List<Class__c> getClassList(){
+        return [SELECT Id, Name, Board__c, ClassTeacher__c, Fee__c, Max_Size__c, MyCount__c, Custom_Status__c, DetailedDescription__c FROM Class__c ];
+    }
+    
+    public PageReference deleteClass(){
+        try{
+            Id classId=(Id)classId;
+            Database.delete(classId);
+            showEditSection=false;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Successfully Deleted!!'));
+        }catch(Exception e){         
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Delete Failed!!. Please review the error.'));
+        }
+        return null;
+    }
+    
+    public PageReference saveClass(){
+        try{
+            Database.update(classObj);
+            classObj=null;
+            showEditSection=false;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Successfully Updated!!'));
+        }catch(DmlException e){
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Can not Save. '+e.getMessage()));
+        }
+        return null;        
+    }
+    
+    public PageReference showEdit(){   
+        Id classId=(Id)classId;
+        List<Class__c> classList=[SELECT Id, Name, Board__c, ClassTeacher__c, Fee__c, Max_Size__c, MyCount__c, Custom_Status__c, DetailedDescription__c FROM Class__c WHERE Id=:classId ];
+        classObj=classList[0];
+        showEditSection=true;
+        return null;        
+    }
+    
+    public PageReference cancelEdit(){
+        classObj=null;
+        showEditSection=false;
+        return null;     
+    }
+}

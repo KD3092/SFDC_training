@@ -1,0 +1,66 @@
+public class BillToContactController {
+    
+    public String selectedContactId{ get; set; }
+    
+    public List<Contact> getContactList() {        
+        return (List<Contact>)setControllerObj.getRecords();
+    }
+    
+    public ApexPages.StandardSetController setControllerObj {
+        get {
+            String sql=' SELECT ID, Name FROM Contact ';             
+            Id managerId=apexpages.currentpage().getparameters().get('id');
+            if(managerId!=null)
+                sql+=' WHERE Account.Id=\''+managerId+'\'';           
+            
+            if(setControllerObj==null){
+                setControllerObj = new ApexPages.StandardSetController(Database.getQueryLocator(sql));
+            }
+            return setControllerObj;
+        }
+        set;
+    }
+    
+    public PageReference save(){
+        
+        if(selectedContactId==null){
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Please Select Contact.'));
+            return null;
+        }
+        
+        Id opportunityId =apexpages.currentpage().getparameters().get('opId');
+        List<Opportunity> opportunityList=[SELECT Id, BillToContact__c FROM Opportunity WHERE Id=:opportunityId];
+        for(Opportunity oppObj : opportunityList){            
+            oppObj.BillToContact__c=selectedContactId;
+        }
+        
+        update opportunityList;
+        
+        return cancel();
+    }
+    
+    public PageReference clear(){
+        Id opportunityId =apexpages.currentpage().getparameters().get('opId');
+        List<Opportunity> opportunityList=[SELECT Id, BillToContact__c FROM Opportunity WHERE Id=:opportunityId];
+        
+        for(Opportunity oppObj : opportunityList){            
+            oppObj.BillToContact__c=null;
+        }
+        
+        update opportunityList;
+        
+        return cancel();
+    }
+    
+    public PageReference cancel(){
+        Id opportunityId =apexpages.currentpage().getparameters().get('opId');
+        PageReference pageRef = new PageReference('/'+opportunityId);
+        pageRef.setRedirect(true);
+        return pageRef;
+    }   
+    
+    public void setselectedContactId(){        
+        String contactId = System.currentPagereference().getParameters().get('contactId');
+        selectedContactId=contactId;
+    }
+}
