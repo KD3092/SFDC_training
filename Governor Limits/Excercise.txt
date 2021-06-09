@@ -1,0 +1,91 @@
+Excercixe 1:
+
+trigger accountTestTrigger on Account (before insert, before update) {
+    List<Contact> contactList= [SELECT id, salutation, firstname, lastname, email FROM Contact WHERE accountId = :Trigger.new];
+    if(!contactList.isEmpty()){
+        for(Contact contactObj: contactList) {
+            contactObj.Description=contactObj.salutation + ' ' + contactObj.firstName + ' ' + contactObj.lastname;
+        }
+        update contactList;
+    }
+}
+
+
+Problem associated:
+1. SOQL in for loop
+2. Two loop has been used. Loop on account is not required. 
+
+
+
+Excercixe 2:
+
+trigger accountTrigger on Account (before delete, before insert, before update) {
+    List<Opportunity> opptysList = [SELECT id, name, closedate, stagename FROM Opportunity WHERE  StageName IN ('Closed - Lost', 'Closed - Won')];
+
+        for(Opportunity opportunityObj: opptysList){
+            if(opportunityObj.stagename=='Closed - Lost'){
+                //here logic for Closed Lost
+            }else if(opportunityObj.stagename=='Closed - Won'){
+                //here logic for Closed Won
+            }
+        }
+}
+
+Problem associated:
+1. Two SOQL on same object which changed to one SOQL 
+2. Loop on account is not required.
+3. if condition to check account id is not requied.
+4. Two loops on opportunity list changed to one.
+
+
+Excercixe 3:
+
+trigger accountLimitExample on Account (after delete, after insert, after update) {
+    
+    System.debug('Total Number of SOQL Queries allowed in this Apex code context: ' + Limits.getLimitQueries());
+    System.debug('Total Number of records that can be queried in this Apex code context: ' +Limits.getLimitQueryRows());
+    
+    System.debug('Total Number of DML statements allowed in this Apex code context: ' + Limits.getLimitDmlStatements());
+    
+    System.debug('Total Number of CPU usage time (in ms) allowed in this Apex code context: ' + Limits.getLimitCpuTime());
+    
+    // Query the Opportunity object
+    if(Trigger.isInsert || Trigger.isUpdate){
+        List<Opportunity> opportunityList =[SELECT id, description, name, accountid, closedate, stagename FROM Opportunity WHERE accountId IN:Trigger.newMap.keySet()];
+        
+        
+        System.debug('1. Number of Queries used in this Apex code so far: ' + Limits.getQueries());
+        
+        System.debug('2. Number of rows queried in this Apex code so far: ' + Limits.getQueryRows());
+        
+        System.debug('3. Number of DML statements used so far: ' +  Limits.getDmlStatements());
+        
+        System.debug('4. Amount of CPU time (in ms) used so far: ' + Limits.getCpuTime());
+        
+        //Proactively determine if there are too many Opportunities to update and avoid governor limits
+        
+        if(opportunityList.size()>Limits.getLimitDMLRows()) {
+            
+            // Logic to avoid governor limits - addError
+            Trigger.New[0].addError('List of data can exceed the Governer limit for DML rows.');
+        }else{
+            
+            System.debug('Continue processing. Not going to hit DML governor limits');
+            
+            System.debug('Going to update ' + opportunityList.size() + ' opportunities and governor limits will allow ' + Limits.getLimitDMLRows());
+            
+            System.debug('Number of DML statements used so far: ' +Limits.getDmlStatements());
+            if(!opportunityList.isEmpty()){
+                for(Opportunity opportunityObj: opportunityList){                    
+                    opportunityObj.description = 'testing';
+                }
+                update opportunityList;
+            }
+        }
+    }
+    
+    System.debug('Final number of DML statements used so far: ' + Limits.getDmlStatements());
+    
+    System.debug('Final heap size: ' +Limits.getHeapSize());
+    
+}
