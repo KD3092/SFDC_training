@@ -1,27 +1,33 @@
 @isTest
 private class RejectHindiTeacherTriggerTest {
-    private static final String CLASS_NAME='10 A';
-    private static final String TEACHER_NAME='Test Teacher';
-    private static final String TEACH_NAME='Test Teach';
-    private static final String SUBJECT_LIST_WITH_HINDI='English;Hindi;Science';
-    private static final String SUBJECT_LIST_WITHOUT_HINDI='English;Math';
+    private static final string CLASS_NAME='10 A';
+    private static final string TEACHER_NAME='Test Teacher';
+    private static final string TEACH_NAME='Test Teach';
+    private static final string SUBJECT_LIST_WITH_HINDI='English;Hindi;Science';
+    private static final string SUBJECT_LIST_WITHOUT_HINDI='English;Math';
     
-    @isTest
-    private static void testWithSubjectHindi(){
-        
+    @testSetup
+    private static void setup(){
         Contact contactObj= new Contact(LastName=TEACHER_NAME);
         insert contactObj;
         
         Class__c classObj= new Class__c(Name=CLASS_NAME);
         insert classObj;       
+    }
+    
+    @isTest
+    private static void testWithSubjectHindi(){
         
-        Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactObj.Id, Class__c=classObj.Id, Subject__c=SUBJECT_LIST_WITH_HINDI);
+        List<Contact> contactList=[SELECT Id, Description FROM Contact WHERE LastName=:TEACHER_NAME ];
+        List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
+        
+        Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactList[0].Id, Class__c=classList[0].Id, Subject__c=SUBJECT_LIST_WITH_HINDI);
         insert teachObj;
         
-        contactObj.Description='Adding Description';
+        contactList[0].Description='Adding Description';
         
         Test.startTest();
-        Database.SaveResult result=Database.update(contactObj,false);
+        Database.SaveResult result=Database.update(contactList[0],false);
         Test.stopTest();
         
         System.assert(!result.isSuccess());
@@ -31,19 +37,16 @@ private class RejectHindiTeacherTriggerTest {
     @isTest
     private static void testWithoutSubjectHindi(){
         
-        Contact contactObj= new Contact(LastName=TEACHER_NAME);
-        insert contactObj;
+        List<Contact> contactList=[SELECT Id, Description FROM Contact WHERE LastName=:TEACHER_NAME ];
+        List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
         
-        Class__c classObj= new Class__c(Name=CLASS_NAME);
-        insert classObj;       
-        
-        Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactObj.Id, Class__c=classObj.Id, Subject__c=SUBJECT_LIST_WITHOUT_HINDI);
+        Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactList[0].Id, Class__c=classList[0].Id, Subject__c=SUBJECT_LIST_WITHOUT_HINDI);
         insert teachObj;
         
-        contactObj.Description='Adding Description';
+        contactList[0].Description='Adding Description';
         
         Test.startTest();
-        Database.SaveResult result=Database.update(contactObj,false);
+        Database.SaveResult result=Database.update(contactList[0],false);
         Test.stopTest();
         
         System.assert(result.isSuccess());
