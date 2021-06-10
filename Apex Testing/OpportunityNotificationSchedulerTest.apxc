@@ -7,13 +7,21 @@ private class OpportunityNotificationSchedulerTest {
     
     @isTest
     private static void getOpportunityOwnerEmailIdsTest(){
-        Opportunity opportunityObj= new Opportunity(Name = OPPORTUNITY_NAME, StageName=STAGE_NAME_QUALIFICATION, CloseDate=Date.today());
-        insert opportunityObj;
+        List<Opportunity> opportunityList=new List<Opportunity>();
+         
+        for(Integer counter=0;counter<10;counter++){
+            opportunityList.add( new Opportunity(Name = OPPORTUNITY_NAME, StageName=STAGE_NAME_QUALIFICATION, CloseDate=Date.today()));  
+        }
+           
+        insert opportunityList;
         
         Test.startTest();
-        List<String> toAddressesList= new OpportunityNotificationScheduler(NO_OF_DAYS).getOpportunityOwnerEmailIds();
+        Set<String> toAddressesList= new OpportunityNotificationScheduler(NO_OF_DAYS).getOpportunityOwnerEmailIds();
         Test.stopTest();
         
-        System.assert(toAddressesList.contains(EXPECTED_OWNER_EMAILID));
+        for(String emailAddress:toAddressesList){
+             System.assertEquals(EXPECTED_OWNER_EMAILID, emailAddress);
+        }
+       
     }    
 }
