@@ -4,16 +4,17 @@ private class UpdateMyCountTriggerTest {
     private static final String STUDENT_NAME='Test Student';
     private static final String SEX_MALE='Male';
     
+    @testSetup
+    private static void setup(){
+        Class__c classObj= new Class__c(Name=CLASS_NAME, Max_Size__c=100);
+        insert classObj; 
+    }
+    
     @isTest
     private static void insertStudentTest(){
-        Class__c classObj= new Class__c(Name=CLASS_NAME, Max_Size__c=100);
-        insert classObj;
+        List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
         
-        List<Student__c> studentObjList= new List<Student__c>();
-        for(Integer counter=0; counter<100; counter++){
-            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_MALE, Class__c=classObj.Id));
-        }
-        
+        List<Student__c> studentObjList= getListOfStudent(100, SEX_MALE, classList[0].id);        
         Test.startTest();
         insert studentObjList;
         Test.stopTest();
@@ -23,14 +24,10 @@ private class UpdateMyCountTriggerTest {
     }
     
     @isTest
-    private static void updateStudentTest(){
-        Class__c classObj= new Class__c(Name=CLASS_NAME, Max_Size__c=100);
-        insert classObj; 
+    private static void updateStudentTest(){     
+        List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
         
-        List<Student__c> studentObjList= new List<Student__c>();     
-        for(Integer counter=0; counter<100; counter++){
-            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_MALE, Class__c=classObj.Id));
-        }
+        List<Student__c> studentObjList=  getListOfStudent(100, SEX_MALE, classList[0].id );
         insert studentObjList;
         
         for(Student__c studentObj : studentObjList){
@@ -43,5 +40,14 @@ private class UpdateMyCountTriggerTest {
         
         List<Class__c> classObjList=[SELECT Id, Mycount__c FROM Class__c WHERE Name =: CLASS_NAME];
         System.assertEquals(100, classObjList[0].Mycount__c);
+    }
+    
+    private static List<Student__c> getListOfStudent(Integer count, String gender, Id classId){
+        List<Student__c> studentObjList= new List<Student__c>();
+        for(Integer counter=0; counter<count; counter++){
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=gender, Class__c=classId));
+        }
+        
+        return studentObjList;
     }
 }
