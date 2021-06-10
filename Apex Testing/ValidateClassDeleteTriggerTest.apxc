@@ -1,24 +1,28 @@
 @isTest
 private class ValidateClassDeleteTriggerTest {
-
     private static final String CLASS_NAME='10 A';
     private static final String STUDENT_NAME='Test Student';
     private static final String SEX_FEMALE='Female';
     private static final String SEX_MALE='Male';
-	
+    
+    @testSetup
+    private static void setup(){
+       Class__c classObj= new Class__c(Name=CLASS_NAME);
+       insert classObj; 
+    }
+    
     @isTest
     private static void testWithMoreThanOneFemaleStudent(){
-        Class__c classObj= new Class__c(Name=CLASS_NAME);
-        insert classObj;
+        List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME ]; 
         
         List<Student__c> studentObjList= new List<Student__c>();
         for(Integer counter=0; counter<10; counter++){
-            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classList[0].Id));
         }
         insert studentObjList;
         
         Test.startTest();
-        Database.DeleteResult result = Database.delete(classObj,false);
+        Database.DeleteResult result = Database.delete(classList[0],false);
         Test.stopTest();
         
         System.assert(!result.isSuccess());
@@ -27,23 +31,24 @@ private class ValidateClassDeleteTriggerTest {
     
     @isTest
     private static void testWithOnlyOneFemaleStudent(){
-        Class__c classObj= new Class__c(Name=CLASS_NAME);
-        insert classObj;
+         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME ]; 
         
         List<Student__c> studentObjList= new List<Student__c>();
         for(Integer counter=0; counter<10; counter++){
-            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_MALE, Class__c=classObj.Id));
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_MALE, Class__c=classList[0].Id));
         }
         
-        studentObjList.add(new Student__c(Name=STUDENT_NAME, Sex__c=SEX_FEMALE, Class__c=classObj.Id));
+        studentObjList.add(new Student__c(Name=STUDENT_NAME, Sex__c=SEX_FEMALE, Class__c=classList[0].Id));
         
         insert studentObjList;
         
         Test.startTest();
-        Database.DeleteResult result= Database.delete(classObj,false);
+        Database.DeleteResult result= Database.delete(classList[0],false);
         Test.stopTest();
         
         System.assert(result.isSuccess());
+        List<Class__c> classListAfterDelete=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME ];        
+        System.assert(classListAfterDelete.isEmpty());
     }
     
     
@@ -74,5 +79,5 @@ private class ValidateClassDeleteTriggerTest {
         }
         
     }
-    
+        
 }
