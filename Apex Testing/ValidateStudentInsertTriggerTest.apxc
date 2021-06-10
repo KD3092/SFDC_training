@@ -1,17 +1,20 @@
 @isTest
-public class ValidateStudentInsertTriggerTest {
+private class ValidateStudentInsertTriggerTest {
     private static final String CLASS_NAME='10 A';
     private static final String STUDENT_NAME='Test Student';
-        
-    @isTest
-    public static void testWhenCurrentStudentCountZero(){
+    private static final String EXPECTED_ERROR_MSG='Maximum limit of student has been reached in class. So can not add more Student.';
+    
+    @testSetup
+    private static void setup(){
         Class__c classObj= new Class__c(Name=CLASS_NAME, Max_Size__c=10);
         insert classObj;
+    }
+    
+    @isTest
+    private static void testWhenCurrentStudentCountZero(){
+        List<Class__c> classList=[SELECT Id FROM Class__C WHERE Name=:CLASS_NAME];      
         
-        List<Student__c> studentList= new List<Student__c>();
-        for(Integer counter=0; counter<5; counter++){
-            studentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
-        }
+        List<Student__c> studentList= getStudentListForCount(5,classList[0].Id);
         
         Test.startTest();
         Database.SaveResult[] saveResultList = Database.insert(studentList,false);
@@ -23,35 +26,55 @@ public class ValidateStudentInsertTriggerTest {
     }
     
     @isTest
-    public static void testWhenCurrentStudentCountNotZero(){
-        Class__c classObj = new Class__c( Name=CLASS_NAME, Max_Size__c=10);
-        insert classObj;
+    private static void testWhenCurrentStudentCountNotZero(){
+       	List<Class__c> classList=[SELECT Id FROM Class__C WHERE Name=:CLASS_NAME]; 
+        Id classId=classList[0].Id;
         
-        List<Student__c> oldStudentList = new List<Student__c>();
-        for(Integer counter=0; counter<5; counter++){
-            oldStudentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
-        }
+        List<Student__c> oldStudentList= getStudentListForCount(5,classId);
         insert oldStudentList;
         
-        List<Student__c> studentList= new List<Student__c>();
-        for(Integer counter=0; counter<10; counter++){
-            studentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classObj.Id));
-        }
+        List<Student__c> studentList= getStudentListForCount(10,classId);
         
         Test.startTest();
         Database.SaveResult[] saveResultList = Database.insert(studentList,false);
         Test.stopTest();
         
-        Integer successCount=0;
-        Integer failedCount=0;
+        Integer successCount=0;        
         
         for(Database.SaveResult saveResult : saveResultList) {         
             if(saveResult.isSuccess())
-                successCount++;
-            else
-                failedCount++;  
+                successCount++;           
         }
         System.assertEquals(5, successCount);
+    }
+    
+    @isTest
+    private static void testWhenCurrentStudentCountNotZero_shouldFailed(){
+        List<Class__c> classList=[SELECT Id FROM Class__C WHERE Name=:CLASS_NAME]; 
+        Id classId=classList[0].Id;
+        
+        List<Student__c> oldStudentList= getStudentListForCount(10,classId);
+        insert oldStudentList;
+        
+        List<Student__c> studentList= getStudentListForCount(10,classId);
+        
+        Test.startTest();
+        Database.SaveResult[] saveResultList = Database.insert(studentList,false);
+        Test.stopTest();
+        
+        for(Database.SaveResult saveResult : saveResultList) {         
+            System.assert(!saveResult.isSuccess());  
+            System.assertEquals(EXPECTED_ERROR_MSG, saveResult.getErrors()[0].getMessage());
+        }
+        
+    }
+    
+    private static List<Student__c> getStudentListForCount(Integer count,Id classId){
+        List<Student__c> studentList = new List<Student__c>();
+        for(Integer counter=0; counter<count; counter++){
+            studentList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classId));
+        }
+        return studentList;
     }
     
 }
