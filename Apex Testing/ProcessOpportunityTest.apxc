@@ -6,7 +6,7 @@ private class ProcessOpportunityTest {
     private static final String OPPORTUNITY_NAME='Test Opportunity';
     
     @istest
-    private static void testUpdateOpportunityManager(){
+    private static void updateOpportunityManagerTest_WhenBillToContactNOtNull_ShouldPopulateManager(){
         Account accountId= new Account(Name=ACCOUNT_NAME);
         insert accountId;
         
@@ -24,8 +24,31 @@ private class ProcessOpportunityTest {
         Test.stopTest();
         
         for(Opportunity opportunityObj : [SELECT Manager__c, BillToContact__r.AccountId FROM Opportunity WHERE BillToContact__c =: contactObj.Id]){
-			System.assert(opportunityObj.Manager__c!=null);
+            System.assertNotEquals(null, opportunityObj.Manager__c);
             System.assertEquals(opportunityObj.BillToContact__r.AccountId , opportunityObj.Manager__c);
+        }
+    }
+    
+    @istest
+    private static void updateOpportunityManagerTest_WhenBillToContactNull_ShouldNotPopulateManager(){
+        Account accountId= new Account(Name=ACCOUNT_NAME);
+        insert accountId;
+        
+        Contact contactObj= new Contact(LastName=Contact_NAME, AccountId=accountId.Id);
+        insert contactObj;
+        
+        List<Opportunity> opportunityList= new  List<Opportunity>();
+        for(Integer counter=0; counter<10; counter++){
+            opportunityList.add(new Opportunity(Name=OPPORTUNITY_NAME+' '+counter, StageName=STAGE_NAME_Qualification, CloseDate=Date.today()));
+        }
+        insert opportunityList;
+        
+        Test.startTest();
+        ProcessOpportunity.updateOpportunityManager(opportunityList);
+        Test.stopTest();
+        
+        for(Opportunity opportunityObj : [SELECT Manager__c, BillToContact__r.AccountId FROM Opportunity WHERE Name =: OPPORTUNITY_NAME]){
+            System.assertEquals(null, opportunityObj.Manager__c);
         }
     }
 }
