@@ -11,7 +11,7 @@ private class UpdateMyCountTriggerTest {
     }
     
     @isTest
-    private static void insertStudentTest(){
+    private static void studentTriggerTest_WithInsert_MyCountSHouldEqualToCountofStudentRecord(){
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
         
         List<Student__c> studentObjList= getListOfStudent(100, SEX_MALE, classList[0].id);        
@@ -20,11 +20,14 @@ private class UpdateMyCountTriggerTest {
         Test.stopTest();
         
         List<Class__c> classObjList=[SELECT Id, Mycount__c FROM Class__c WHERE Name =: CLASS_NAME];
-        System.assertEquals(100, classObjList[0].Mycount__c);
+        for(Class__c classObj:classObjList){
+            System.assertEquals(100, classObj.Mycount__c);
+        }
+        
     }
     
     @isTest
-    private static void updateStudentTest(){     
+    private static void studentTriggerTest_WithUpdate_MyCountSHouldEqualToCountofStudentRecord(){     
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
         
         List<Student__c> studentObjList=  getListOfStudent(100, SEX_MALE, classList[0].id );
