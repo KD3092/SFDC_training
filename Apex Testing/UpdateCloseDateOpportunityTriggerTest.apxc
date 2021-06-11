@@ -13,7 +13,7 @@ private class UpdateCloseDateOpportunityTriggerTest {
     }       
     
     @isTest
-    private static void testWithStageClosedWon(){
+    private static void opportunityTriggerTest_WithStageClosedWon_ShouldUpdateCloseDateWithToday(){
         
         List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
         
@@ -33,7 +33,7 @@ private class UpdateCloseDateOpportunityTriggerTest {
     }
     
     @isTest
-    private static void testWithStageClosedLost(){
+    private static void opportunityTriggerTest_WithStageClosedLost_ShouldUpdateCLoseDateWithToday(){
         List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
         
         for(Opportunity opportunityObj : opportunityList){
@@ -52,7 +52,7 @@ private class UpdateCloseDateOpportunityTriggerTest {
     }
     
     @isTest
-    private static void testWithStageOtherThanClosedLost_CLosedWon(){
+    private static void opportunityTriggerTest_WithStageOtherThanClosedLostAndCLoseWon_ShouldNotUpdateCLoseDateWithToday(){
         List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
         
         for(Opportunity opportunityObj : opportunityList){
@@ -66,12 +66,12 @@ private class UpdateCloseDateOpportunityTriggerTest {
         List<Opportunity> opportunityListAfterUpdate=  [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
         
         for(Opportunity opportunityObj : opportunityListAfterUpdate){
-            System.assertEquals(Date.newInstance(2021, 05, 05), opportunityObj.CloseDate);
+            System.assertEquals(Date.newInstance(2021, 05, 05), opportunityObj.CloseDate);            
         }  
     }
     
     @isTest
-    private static void testWithStageHavingSameValues(){
+    private static void opportunityTriggerTest_WithSameValue_ShouldNotUpdateCLoseDateWithToday(){
         List<Opportunity> opportunityList = [SELECT Name, StageName, CloseDate FROM Opportunity WHERE Name =: OPPORTUNITY_NAME];
         
         for(Opportunity opportunityObj : opportunityList){
