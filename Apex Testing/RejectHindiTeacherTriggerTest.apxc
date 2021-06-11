@@ -5,6 +5,7 @@ private class RejectHindiTeacherTriggerTest {
     private static final string TEACH_NAME='Test Teach';
     private static final string SUBJECT_LIST_WITH_HINDI='English;Hindi;Science';
     private static final string SUBJECT_LIST_WITHOUT_HINDI='English;Math';
+    private static final string DESCRIPTION='Adding Description';
     
     @testSetup
     private static void setup(){
@@ -16,7 +17,7 @@ private class RejectHindiTeacherTriggerTest {
     }
     
     @isTest
-    private static void testWithSubjectHindi(){
+    private static void teacherTriggerTest_WithSubjectHindi_ShouldNotAllowUpdate(){
         
         List<Contact> contactList=[SELECT Id, Description FROM Contact WHERE LastName=:TEACHER_NAME ];
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
@@ -24,18 +25,27 @@ private class RejectHindiTeacherTriggerTest {
         Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactList[0].Id, Class__c=classList[0].Id, Subject__c=SUBJECT_LIST_WITH_HINDI);
         insert teachObj;
         
-        contactList[0].Description='Adding Description';
+        for(Contact contactObj:contactList){
+             contactObj.Description=DESCRIPTION;
+        }
         
         Test.startTest();
         Database.SaveResult result=Database.update(contactList[0],false);
         Test.stopTest();
-        
+       
         System.assert(!result.isSuccess());
-        System.assertEquals('Update is not allowed as Teacher is teaching Hindi.',result.getErrors()[0].getMessage());
+        System.assertEquals('Update is not allowed as Teacher is teaching Hindi.',result.getErrors()[0].getMessage()); 
+        
+        List<Contact> afterUpdareContactList=[SELECT Id, Description FROM Contact WHERE LastName=:TEACHER_NAME ];
+        
+        for(Contact contactObj:afterUpdareContactList){
+          System.assertNotEquals(DESCRIPTION, contactObj.Description);
+        }        
+        
     }
     
     @isTest
-    private static void testWithoutSubjectHindi(){
+    private static void teacherTriggerTest_WithOutSubjectHindi_ShouldAllowUpdate(){
         
         List<Contact> contactList=[SELECT Id, Description FROM Contact WHERE LastName=:TEACHER_NAME ];
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];
@@ -43,12 +53,18 @@ private class RejectHindiTeacherTriggerTest {
         Teach__c teachObj=new Teach__c(Name=TEACH_NAME, Teacher__c=contactList[0].Id, Class__c=classList[0].Id, Subject__c=SUBJECT_LIST_WITHOUT_HINDI);
         insert teachObj;
         
-        contactList[0].Description='Adding Description';
+        contactList[0].Description=DESCRIPTION;
         
         Test.startTest();
         Database.SaveResult result=Database.update(contactList[0],false);
         Test.stopTest();
         
         System.assert(result.isSuccess());
+        
+        List<Contact> afterUpdareContactList=[SELECT Id, Description FROM Contact WHERE LastName=:TEACHER_NAME ];
+        
+        for(Contact contactObj:afterUpdareContactList){
+          System.assertEquals(DESCRIPTION, contactObj.Description);
+        }
     }
 }
