@@ -12,7 +12,7 @@ private class ValidateClassDeleteTriggerTest {
     }
     
     @isTest
-    private static void testWithMoreThanOneFemaleStudent(){
+    private static void classTriggerTest_WithMoreThanOneFemaleStudent_ShouldNotAllowDelete(){
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME ]; 
         
         List<Student__c> studentObjList= new List<Student__c>();
@@ -30,7 +30,7 @@ private class ValidateClassDeleteTriggerTest {
     }
     
     @isTest
-    private static void testWithOnlyOneFemaleStudent(){
+    private static void classTriggerTest_WithOneFemaleStudent_ShouldAllowDelete(){
          List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME ]; 
         
         List<Student__c> studentObjList= new List<Student__c>();
@@ -53,7 +53,7 @@ private class ValidateClassDeleteTriggerTest {
     
     
     @isTest
-    private static void testBulkDelete(){
+    private static void classTriggerTest_BulkTest_ShouldAllowDelete(){
         
         List<Class__c> classObjList= new List<Class__c>();
         for(Integer counter=0; counter<100; counter++){
