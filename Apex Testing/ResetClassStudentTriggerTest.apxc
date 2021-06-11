@@ -18,7 +18,7 @@ private class ResetClassStudentTriggerTest {
     }
     
     @isTest
-    private static void testWithCustomStatusReset(){
+    private static void classTriggerTest_WithCustomStatusReset_ShouldDeleteAllStudent(){
         List<Class__c> classObjList=[SELECT Id, Custom_Status__c FROM Class__c WHERE Name =: CLASS_NAME];
         
         for(Class__c classObj : classObjList){           
@@ -36,7 +36,7 @@ private class ResetClassStudentTriggerTest {
     }
     
     @isTest
-    private static void testWithCustomStatusNotReset(){
+    private static void classTriggerTest_WithCustomStatusNotReset_ShouldNotDeleteAllStudent(){
         List<Class__c> classObjList=[SELECT Id, Custom_Status__c FROM Class__c WHERE Name =: CLASS_NAME];
         for(Class__c classObj : classObjList){
             classObj.Custom_Status__c = CUSTOM_STATUS_CLOSE;
@@ -53,7 +53,7 @@ private class ResetClassStudentTriggerTest {
     }
     
     @isTest
-    private static void testWithCustomStatusAlreadyReset(){
+    private static void classTriggerTest_WithCustomStatusAlreadyReset_ShouldNotDeleteAllStudent(){
         List<Class__c> classObjList=[SELECT Id,Custom_Status__c FROM Class__c WHERE Name =: CLASS_NAME];
         Id classId;
         for(Class__c classObj : classObjList){
