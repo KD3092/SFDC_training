@@ -6,12 +6,12 @@ private class ProcessAccountTest {
     
     @testSetup
     private static void setup(){
-       Account accountObj= new Account(Name=ACCOUNT_NAME);
-       insert accountObj; 
+        Account accountObj= new Account(Name=ACCOUNT_NAME);
+        insert accountObj; 
     }
     
     @isTest
-    private static void updateAccountForContactIdsAsynchTest(){
+    private static void updateAccountForContactIdsAsynchTest_WithNullContactId_ShouldPopulateContactId(){
         
         List<Account> accountList= [SELECT Id FROM Account WHERE Name=:ACCOUNT_NAME];
         
@@ -23,13 +23,13 @@ private class ProcessAccountTest {
         Test.stopTest();
         
         for(Account account : [SELECT ID, Contactids__c, (SELECT ID FROM Contacts) FROM Account WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: contactObj.Id)]){
-            System.assert(account.contactids__c!=null);           
+            System.assertNotEquals(null, account.contactids__c);
             System.assert(account.contactids__c.contains(contactObj.Id));
         }
     }
     
     @isTest
-    private static void updateAccountForContactIdsAsynchTestWithNotNUllContactIds(){
+    private static void updateAccountForContactIdsAsynchTest_WithNotNullContactId_ShouldPopulateContactId(){
         List<Account> accountList= [SELECT Id FROM Account WHERE Name=:ACCOUNT_NAME];
         Id accountId=accountList[0].Id;
         
@@ -49,7 +49,7 @@ private class ProcessAccountTest {
         Test.stopTest();
         
         for(Account account : [SELECT ID, Contactids__c, (SELECT ID FROM Contacts) FROM Account WHERE ID IN (SELECT AccountId FROM Contact WHERE ID =: newContactObj.Id)]){
-            System.assert(account.contactids__c!=null);           
+            System.assertNotEquals(null, account.contactids__c);
             System.assert(account.contactids__c.contains(newContactObj.Id));
         }
     }
