@@ -11,12 +11,12 @@ private class SearchStudentsInClassTest {
     }
     
     @isTest
-    private static void getStudentOfClassTest(){
+    private static void getStudentOfClassTest_ShouldReturnAllStudent(){
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];        
         
         List<Student__c> studentObjList= new List<Student__c>();
         for(Integer counter=0; counter<10; counter++){
-            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Sex__c=SEX_FEMALE, Class__c=classList[0].Id));
+            studentObjList.add(new Student__c(Name=STUDENT_NAME+' '+counter, Class__c=classList[0].Id));
         }
         insert studentObjList;
         
@@ -24,11 +24,12 @@ private class SearchStudentsInClassTest {
         List<Student__c> returnStudentList= SearchStudentsInClass.getStudentOfClass(classList[0].Id);
         Test.stopTest();
         
-        System.assertEquals(studentObjList.size(), returnStudentList.size());        
+        System.assertEquals(studentObjList.size(), returnStudentList.size());   
+         System.assertEquals(studentObjList, returnStudentList);     
     }
     
     @isTest
-    private static void getStudentPerClassTest(){
+    private static void getStudentPerClassTest_ShouldReturnMapOfClassStudentSet(){
         List<Class__c> classList=[SELECT Id FROM Class__c WHERE Name=:CLASS_NAME];  
         
         
@@ -48,7 +49,7 @@ private class SearchStudentsInClassTest {
     }
     
     @isTest
-    private static void getWorkingDaysTest(){
+    private static void getWorkingDays_ShouldReturnCorrectWorkingDay(){
         
         Date startDate=Date.newInstance(2021, 05, 25);
         Date endDate=Date.newInstance(2021, 05, 31);
@@ -59,6 +60,20 @@ private class SearchStudentsInClassTest {
         Test.stopTest();
         
         System.assertEquals(expectedWorkingDays, workingDays);     
+    }
+    
+    @isTest
+    private static void getWorkingDays_StartDataGreaterToEndDate_ShouldReturnZero(){
+        
+        Date endDate=Date.newInstance(2021, 05, 25);
+        Date startDate=Date.newInstance(2021, 05, 31);
+        Integer expectedWorkingDays=5;
+        
+        Test.startTest();
+        Integer workingDays= SearchStudentsInClass.getWorkingDays(startDate,endDate);
+        Test.stopTest();
+        
+        System.assertNotEquals(expectedWorkingDays, workingDays);     
     }
     
 }
