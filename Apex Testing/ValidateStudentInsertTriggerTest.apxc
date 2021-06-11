@@ -11,7 +11,7 @@ private class ValidateStudentInsertTriggerTest {
     }
     
     @isTest
-    private static void testWhenCurrentStudentCountZero(){
+    private static void studentTriggerTest_WhenCurrentStudentCountZero_ShouldAllowInsert(){
         List<Class__c> classList=[SELECT Id FROM Class__C WHERE Name=:CLASS_NAME];      
         
         List<Student__c> studentList= getStudentListForCount(5,classList[0].Id);
@@ -26,7 +26,7 @@ private class ValidateStudentInsertTriggerTest {
     }
     
     @isTest
-    private static void testWhenCurrentStudentCountNotZero(){
+    private static void studentTriggerTest_WhenCurrentStudentCountNotZero_ShouldAllowInsertForFiveRecord(){
        	List<Class__c> classList=[SELECT Id FROM Class__C WHERE Name=:CLASS_NAME]; 
         Id classId=classList[0].Id;
         
@@ -49,7 +49,7 @@ private class ValidateStudentInsertTriggerTest {
     }
     
     @isTest
-    private static void testWhenCurrentStudentCountNotZero_shouldFailed(){
+    private static void studentTriggerTest_WhenCurrentStudentCountNotZero_ShouldNotAllowInsert(){
         List<Class__c> classList=[SELECT Id FROM Class__C WHERE Name=:CLASS_NAME]; 
         Id classId=classList[0].Id;
         
