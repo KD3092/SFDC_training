@@ -1,0 +1,132 @@
+ul {
+list-style-type: none;
+margin: 0;
+padding: 0;
+overflow: hidden;
+}
+
+li {
+float: left;
+}
+
+li a {
+display: block;
+color: gray;
+padding: 17px 16px;
+text-decoration: none;
+}
+
+li a:hover {
+background-color: #0579ac;
+color:white;
+}
+
+ul{
+height:50px;
+}
+
+#banner{
+height: 400px;
+max-width: 100%;
+background-image: url('../image/parking_banner.jpg');
+background-repeat: no-repeat;
+background-size: 100% 100%;
+margin-bottom: 15px;			
+}
+.panelDiv{
+width: 47%;
+float: left;
+height: 300px;
+}
+input[type=text], input[type=email], input[type=password], input[type=number], select, textarea {
+width: 80%;
+padding: 10px;
+margin: 3px 0 10px 0;
+background: #f1f1f1;
+resize: none;
+}
+select{
+width: 278px !important;
+}
+.feedbackRegion{
+height:320px;	
+}
+.savebtn{
+background-color: #0579ac;
+color: white;
+padding: 16px 20px;
+margin: 8px 0;
+border: none;
+cursor: pointer;
+width: 100%;
+opacity: 0.9;
+}
+.sideIcon{
+color: #0579ac;
+font-size: 14pc;
+margin: 55px 0px 0px 90px;
+}
+.region{
+min-height: 390px;
+}
+.pricingPanel{
+padding: 10px;
+border: 1px solid #0579ac;
+width: 26%;
+float: left;
+margin-left: 4%;
+margin-top: 20px;		
+}
+.priceDiv{
+height: 120px;
+border: 2px solid #0579ac;
+border-radius: 50%;
+width: 40%;				
+}
+
+.price{				
+font-size: 30px;
+font-weight: bold;
+margin-top: 25px;			
+}
+
+.tenure{
+font-size: 20px;				
+}
+
+.priceList{
+text-align: center;
+color: gray;			
+}
+
+.purchaseBtn{
+background-color: white;
+border: 2px solid #0579ac;
+padding: 10px;
+color: #0579ac;
+cursor: pointer;            
+}
+
+.boxShadow{
+box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+}
+
+.borderRadius10{
+border-radius: 10px;
+}
+
+.panelHeader{					
+background-color: #0579ac;
+padding: 5px 0px 6px 1%;
+cursor: pointer;
+font-size: 2pc;
+color:white;
+
+}
+.active, .panelHeader:hover {
+background-color: #ccc;
+}
+.col-6{
+width:50%;
+float:left;
+}

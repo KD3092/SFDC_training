@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Metacube Parking System</title>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+		<link rel="stylesheet" href="style/style.css">
+        <script src="js/home.js"></script>
+		
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><a class="borderRadius10" href="#employeeForm">Add Employee</a></li>
+                <li><a class="borderRadius10" href="#vehicleForm">Add Vehicle</a></li>
+                <li><a class="borderRadius10" href="#feedbackForm">Give Feedback</a></li>
+                <li><a class="borderRadius10" href="#pricingForm">Pricing</a></li>
+            </ul>
+        </nav>
+        
+        <div id="banner" class="boxShadow borderRadius10"></div>
+        <div id="container">
+		<div class="panelHeader borderRadius10" id="employeeForm">Add Employee </div>
+        <div class="region">
+                <div class="panelDiv"><i class="fa fa-address-card sideIcon" aria-hidden="true"></i></div>
+                <div class="panelDiv" >
+                    <form >
+                        <h2 class="collapsible">Add Employee</h2> 
+                        <hr>
+					
+                        <div class="col-6">
+							<label for="fullName"><b>Full Name</b></label>
+							<input type="text" class="borderRadius10" placeholder="Enter Full Name" name="fullName" id="fullName" maxlength="50" required>
+                        </div>
+						
+                        <div class="col-6">
+							<label for="gender"><b>Gender</b></label>
+							<p>
+								<input type="radio" name="gender" value="Male"> <b>Male</b>
+								<input type="radio" name="gender" value="Female"><b>Female</b>
+								<input type="radio" name="gender" value="Other"><b>Other</b>
+							</p>
+                        </div>
+						
+                        <div class="col-6">
+							<label for="email"><b>Email</b></label>
+							<input type="email" class="borderRadius10" placeholder="Enter Email" name="email" id="email" required>
+                        </div>
+						
+						<div class="col-6">
+							<label for="contactNo"><b>Contact Number</b></label>
+							<input type="number" class="borderRadius10" placeholder="Enter Contact Number" maxlength="15" name="contactNo" id="contactNo" required>
+						</div>
+						
+                        <div class="col-6">
+							<label for="password"><b>Password</b></label>
+							<input type="password" class="borderRadius10" placeholder="Enter Password" name="password" id="password" required>
+                        </div>
+						
+                        <div class="col-6">
+							<label for="confirmPassword"><b>Confirm Password</b></label>
+							<input type="password" class="borderRadius10" placeholder="Confirm Password" name="confirmPassword" id="confirmPassword" required>
+                        </div>						
+                        
+                        <hr>  
+                        <button type="submit" class="savebtn">Save</button>                        
+                    </form>
+                </div> 			
+            </div>
+            <hr> 
+<div class="panelHeader borderRadius10" id="vehicleForm">Add Vehicle </div>			
+            <div class="region">
+                <div class="panelDiv"><i class="fa fa-motorcycle sideIcon" aria-hidden="true"></i></div>
+                <div class="panelDiv" >
+                    <form >
+                        <h2>Add Vehicle</h2>
+                        <hr>
+						<div class="col-6">
+							<label for="vehMake"><b>Vehicle Make (Company)</b></label>
+							<input type="text" class="borderRadius10" placeholder="Enter Vehicle Make(Company)" maxlength="50" name="vehMake" id="vehMake" required>
+						</div>
+						
+                        <div class="col-6">
+							<label for="vehModel"><b>Vehicle Model</b></label>
+							<input type="text" class="borderRadius10" placeholder="Enter Vehicle Model" maxlength="50" name="vehModel" id="vehModel" required>
+                        </div>
+						
+						<div class="col-6">
+							<label for="vehType"><b>Type</b></label>
+							<select name="vehType" class="borderRadius10" id="vehType">
+								<option value="Two wheeler">Two wheeler</option>
+								<option value="Four wheeler">Four wheeler</option>
+							</select>
+                        </div>
+						
+						<div class="col-6">
+							<label for="vehNumber"><b>Vehicle Number</b></label>
+							<input type="text" class="borderRadius10" placeholder="Enter Vehicle Number" name="vehNumber" id="vehNumber" required>
+                        </div>
+						
+						<div class="col-6">
+							<label for="empId"><b>Employee Id</b></label>
+							<input type="text" class="borderRadius10" placeholder="Enter Employee Id" name="empId" id="empId" required>
+                        </div>
+						
+						<div class="col-6">
+							<label for="identification"><b>Identification</b></label>
+							<textarea name="identification" class="borderRadius10" id="identification" rows="3" cols="100" maxlength="2000"></textarea>
+						</div>
+						
+                        <hr>  
+                        <button type="submit" class="savebtn">Save</button>                        
+                    </form>
+                </div>                
+            </div>
+			</div>
+            <hr>
+<div class="panelHeader borderRadius10" id="feedbackForm">Feedback Form </div>				
+            <div class="feedbackRegion">
+                <div class="panelDiv"><i class="fa fa-envelope sideIcon" aria-hidden="true"></i></div>
+                <div class="panelDiv">
+                    <form >
+                        <h2>Feedback Form</h2> 
+                        <hr>
+						
+						<div class="col-6">
+                        <label for="fullName"><b>Full Name</b></label>
+                        <input type="text" class="borderRadius10" placeholder="Enter Full Name" name="fullName" id="fullName" maxlength="50" required>
+                        </div>
+						
+						<div class="col-6">
+                        <label for="email"><b>Email</b></label>
+                        <input type="email" class="borderRadius10" placeholder="Enter Email" name="email" id="email" maxlength="100" required>
+                        </div>
+						
+						<div class="col-6">
+                        <label for="subject"><b>Subject</b></label>
+                        <input type="text" class="borderRadius10" placeholder="Subject" maxlength="100" name="subject" id="subject" required>
+                        </div>
+						
+						<div class="col-6">
+                        <label for="message"><b>Message</b></label>
+                        <textarea name="message" class="borderRadius10" id="message" rows="3" cols="100" maxlength="2000">
+                        </textarea>
+						</div>
+						
+                        <hr>  
+                        <button type="submit" class="savebtn">Send</button>                        
+                    </form>
+                </div>                
+            </div>
+            <hr>  
+            <div style=" height: 405px;" id="pricingForm">
+                
+                <div class="pricingPanel boxShadow borderRadius10">
+                    <center>
+                        <h2 style="text-align: center;">CYCLE</h2>
+                        <div class="priceDiv boxShadow">
+						<div class="price">$100</div>
+						<div class="tenure">/month</div>
+						</div>
+                        <div class="priceList">
+                            <p>$5 Daily</p>
+                            <p>$100 Monthly</p>
+                            <p>$500 Yearly</p>
+                        </div>
+                        <button type="submit" class="purchaseBtn borderRadius10">PURCHASE NOW</button>   
+                    </center>
+                </div>
+                
+                <div class="pricingPanel boxShadow borderRadius10">
+                    <center>
+                        <h2 style="text-align: center;">MOTERCYCLE</h2>
+                        <div class="priceDiv boxShadow">
+							<div class="price">$200</div>
+							<div class="tenure">/month</div>
+						</div>
+                        <div class="priceList">
+                            <p>$10 Daily</p>
+                            <p>$200 Monthly</p>
+                            <p>$1000 Yearly</p>
+                        </div>
+                        <button type="submit" class="purchaseBtn borderRadius10">PURCHASE NOW</button>   
+                    </center>
+                </div>
+                <div class="pricingPanel boxShadow borderRadius10">
+                    <center>
+                        <h2 style="text-align: center;">Four Wheeler</h2>
+                        <div class="priceDiv boxShadow">
+						<div class="price">$500</div>
+						<div class="tenure">/month</div>
+						</div>
+                        <div class="priceList">
+                            <p>$20 Daily</p>
+                            <p>$500 Monthly</p>
+                            <p>$3500 Yearly</p>
+                        </div>
+                        <button type="submit" class="purchaseBtn borderRadius10">PURCHASE NOW</button>   
+                    </center>
+                </div>
+            </div>            
+        </div>
+    </body>
+</html>
