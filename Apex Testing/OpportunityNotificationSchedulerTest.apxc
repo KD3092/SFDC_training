@@ -6,10 +6,10 @@ private class OpportunityNotificationSchedulerTest {
     private static final String EXPECTED_OWNER_EMAILID='kuldeep.tiwari@metacube.com';
     
     @isTest
-    private static void getOpportunityOwnerEmailIdsTest(){
+    private static void getOpportunityOwnerEmailIdTest_BulkTest_ShouldGetOwnerEmailId(){
         List<Opportunity> opportunityList=new List<Opportunity>();
          
-        for(Integer counter=0;counter<10;counter++){
+        for(Integer counter=0;counter<100;counter++){
             opportunityList.add( new Opportunity(Name = OPPORTUNITY_NAME, StageName=STAGE_NAME_QUALIFICATION, CloseDate=Date.today()));  
         }
            
