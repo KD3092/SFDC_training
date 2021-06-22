@@ -26,10 +26,10 @@
             <table style="width: 100%">
                 <tr>
                     <td align="center">
-                        <apex:commandButton reRender="AccountListTable" value="First" action="{!setCon.first}" disabled="{!!setCon.hasPrevious}"/>
-                        <apex:commandButton reRender="AccountListTable" value="Previous" action="{!setCon.previous}" disabled="{!!setCon.hasPrevious}"/>
-                        <apex:commandButton reRender="AccountListTable" value="Next" action="{!setCon.next}" disabled="{!!setCon.hasNext}"/>
-                        <apex:commandButton reRender="AccountListTable" value="Last" action="{!setCon.last}" disabled="{!!setCon.hasNext}"/>
+                        <apex:commandButton reRender="AccountListTable" value="First" action="{!setControllerObj.first}" disabled="{!!setControllerObj.hasPrevious}"/>
+                        <apex:commandButton reRender="AccountListTable" value="Previous" action="{!setControllerObj.previous}" disabled="{!!setControllerObj.hasPrevious}"/>
+                        <apex:commandButton reRender="AccountListTable" value="Next" action="{!setControllerObj.next}" disabled="{!!setControllerObj.hasNext}"/>
+                        <apex:commandButton reRender="AccountListTable" value="Last" action="{!setControllerObj.last}" disabled="{!!setControllerObj.hasNext}"/>
                     </td>
                 </tr>
             </table>
