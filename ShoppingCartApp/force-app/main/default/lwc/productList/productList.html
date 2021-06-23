@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Products" icon-name="utility:list">
+
+        <template if:true={products}> 
+            <c-custom-datatable records={products} columns={columns} 
+            btn-label='Add to Cart'
+            btn-icon-name='utility:checkout'
+            text-search-on='Name'
+            onbtnclick={addToCart}
+            keyfield="id">
+                
+            </c-custom-datatable>
+        </template> 
+    </lightning-card>
+    <lightning-card title="Cart" icon-name="utility:checkout" if:true={selectedRows}>
+        <template if:true={selectedRows}> 
+            <c-custom-datatable records={selectedRows} columns={editableTableCOlumns} 
+            btn-label='Checkout'
+            orig-records={products}
+            btn-icon-name='utility:checkout'
+            onbtnclick={checkout}
+            ondeleteaction={cartDeleteAction}
+            onupdateaction={cartUpdateAction}
+            keyfield="Id">                
+            </c-custom-datatable>
+        </template>
+	</lightning-card>
+</template>

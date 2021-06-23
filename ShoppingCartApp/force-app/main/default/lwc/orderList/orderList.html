@@ -1,0 +1,18 @@
+<template>
+    
+    <lightning-card title="My Orders" icon-name="utility:list">      
+            <template if:true={orders}> 
+                <c-custom-datatable records={orders} columns={columns} 
+                btn-label='Add New Purchase Order'
+                btn-icon-name='utility:add'
+                onbtnclick={showProductList}                
+                keyfield="id">
+                    
+                </c-custom-datatable>
+            </template>
+
+            <template if:true={showProducts}> 
+                <c-product-list ></c-product-list>
+            </template>
+	</lightning-card>
+</template>
