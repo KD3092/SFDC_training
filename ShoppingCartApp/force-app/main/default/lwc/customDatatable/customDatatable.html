@@ -1,0 +1,104 @@
+<template>
+    <div class="slds-grid slds-var-m-around_medium" >
+        <div class="slds-float_left" if:true={textSearchOn}>
+            <lightning-input
+            type={componentLabel.TEXT}
+            variant="label-hidden"
+            placeholder={componentLabel.SEARCH_PLACEHOLDER}
+            formatter= text
+            value={state.searchTerm}
+            onchange={handleSearchTermChange}     >
+        </lightning-input>
+        </div>
+        <div class="slds-float_left slds-var-m-left_small" if:true={handleBtnClick}>
+            <lightning-button
+                    label={btnLabel}
+                    icon-name={btnIconName}
+                   variant={componentLabel.SUCCESS}
+                   onclick={handleBtnClick}>
+                   </lightning-button>
+               </div> 
+     
+    </div>
+    <div class="slds-box">
+     <template if:false={hasResults}>
+            <div class="slds-align_absolute-center slds-var-m-vertical_small">
+                We did not find results...
+            </div>
+        </template>
+        
+        <template if:true={state.recordsToDisplay}>               
+            <lightning-datatable
+            key-field={keyfield}
+            data={state.recordsToDisplay}                
+            columns={columns}           
+            onrowselection={handleRowSelection}
+            onrowaction={handleRowAction}
+            onsave={handleSave}
+            draft-values={state.draftValues}>
+        </lightning-datatable>
+        
+        <div class="slds-m-around_small slds-align_absolute-center">
+           <div slot="actions">
+                <lightning-button
+                variant={componentLabel.NEUTRAL}
+                title={componentLabel.FIRST}
+                label={componentLabel.FIRST}
+                class="slds-float_left"
+                icon-name="utility:chevronleft"
+                icon-position={componentLabel.LEFT}
+                onclick={handleClick}
+                ></lightning-button>
+            &nbsp;
+                <lightning-button
+                variant={componentLabel.NEUTRAL}
+                title={componentLabel.PREVIOUS}
+                class="slds-float_left"
+                label={componentLabel.PREVIOUS}
+                icon-name="utility:chevronleft"
+                icon-position={componentLabel.LEFT}
+                onclick={handleClick}
+                ></lightning-button>
+            
+                <lightning-button
+                variant={componentLabel.NEUTRAL}
+                title={componentLabel.NEXT}
+                class="slds-float_right"
+                label={componentLabel.NEXT}
+                icon-name="utility:chevronright"
+                icon-position={componentLabel.RIGHT}
+                onclick={handleClick}
+                ></lightning-button>
+                &nbsp;
+                <lightning-button
+                variant={componentLabel.NEUTRAL}
+                title={componentLabel.LAST}
+                class="slds-float_right"
+                label={componentLabel.LAST}
+                icon-name="utility:chevronright"
+                icon-position={componentLabel.RIGHT}
+                onclick={handleClick}
+                ></lightning-button>
+            </div>
+        </div>
+        <div class="slds-m-top_small"></div>
+            <h2>
+            Displaying Page No:
+            <strong>&nbsp;{state.pageNo}/{state.totalPages}&nbsp;</strong> / displaying records 
+            <template if:true={state.end}>
+                &nbsp;<strong>from {state.endRecord}/{state.totalRecords}</strong>
+            </template>
+            <template if:false={state.end}>
+                &nbsp;<strong>from ({startRecord}-{state.endRecord})/{state.totalRecords}</strong>
+            </template>
+            </h2>
+
+        </template>
+        
+        <template if:true={error}>
+            <div class="slds-text-color_error">
+                An error occurred while loading the My Orders
+            </div>
+        </template>   
+    </div>
+</template>

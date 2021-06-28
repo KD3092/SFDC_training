@@ -1,0 +1,27 @@
+<template>
+    <lightning-card title={componentLabel.PRODUCT_CARD_TITLE} icon-name={componentLabel.PRODUCT_CARD_ICON_NAME}>
+        <template if:true={state.products}> 
+            <c-custom-datatable records={state.products} columns={columns} 
+            btn-label={componentLabel.PRODUCT_TABLE_BTN_LABEL}
+            btn-icon-name={componentLabel.PRODUCT_TABLE_BTN_ICON_NAME}
+            text-search-on={componentLabel.PRODUCT_TABLE_TEXT_SEARCH_ON}
+            onbtnclick={addToCart}
+            keyfield={componentLabel.KEY_FIELD_NAME}>                
+            </c-custom-datatable>
+        </template> 
+    </lightning-card>
+
+    <lightning-card title={componentLabel.CART_CARD_TITLE} icon-name={componentLabel.UTILITY_CHECKOUT_ICON_NAME} if:true={state.selectedRows}>
+        <template if:true={state.selectedRows}> 
+            <c-custom-datatable records={state.selectedRows} columns={editableTableCOlumns} 
+            btn-label={componentLabel.CART_TABLE_BTN_LABEL}
+            orig-records={state.products}
+            btn-icon-name={componentLabel.UTILITY_CHECKOUT_ICON_NAME}
+            onbtnclick={checkout}
+            ondeleteaction={cartDeleteAction}
+            onupdateaction={cartUpdateAction}
+            keyfield={componentLabel.KEY_FIELD_NAME}>                
+            </c-custom-datatable>
+        </template>
+	</lightning-card>
+</template>

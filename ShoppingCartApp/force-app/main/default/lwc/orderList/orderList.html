@@ -1,0 +1,17 @@
+<template>
+    
+    <lightning-card title={componentLabel.CARD_TITLE} icon-name={componentLabel.CARD_ICON_NAME}>      
+            <template if:true={state.orders}> 
+                <c-custom-datatable records={state.orders} columns={columns} 
+                btn-label={componentLabel.TABLE_BTN_LABEL}
+                btn-icon-name={componentLabel.TABLE_BTN_ICON_NAME}
+                onbtnclick={showProductList}                
+                keyfield={componentLabel.KEY_FIELD_NAME}>                    
+                </c-custom-datatable>
+            </template>
+
+            <template if:true={state.showProducts}> 
+                <c-product-list ></c-product-list>
+            </template>
+	</lightning-card>
+</template>

@@ -1,0 +1,29 @@
+<template >
+    <lightning-card title={componentLabel.CARD_TITLE} icon-name={componentLabel.CARD_ICON_NAME} if:true={state.poLineItems}>
+
+        <template if:true={state.poLineItems}>
+            <lightning-datatable
+            key-field={componentLabel.KEY_FIELD_NAME}
+            data={state.poLineItems}                
+            columns={columns}
+            hide-checkbox-column>
+        </lightning-datatable>
+        <div class="slds-m-around_small slds-align_absolute-center">
+            <div slot="actions">
+                <lightning-button 
+                variant="brand" 
+                label={componentLabel.TABLE_BTN_LABEL}
+                title={componentLabel.TABLE_BTN_LABEL}
+                onclick={placeOrder} 
+                class="slds-m-left_x-small"
+                icon-name={componentLabel.UTILITY_CHECKOUT_ICON_NAME}></lightning-button>               
+             </div>
+         </div>
+        </template> 
+        <template if:true={error}>
+            <div class="slds-text-color_error">
+                An error occurred while loading the My Orders
+            </div>
+        </template> 
+    </lightning-card>
+</template>
