@@ -1,0 +1,126 @@
+@IsTest
+private class ShoppingCartServiceTest {
+    
+    @IsTest
+    private static void callingService_With_Blank_String_Should_Not_Call_Selector_Domain_And_Commit(){         
+        
+        fflib_ApexMocks mocks = new fflib_ApexMocks();
+        fflib_ISObjectUnitOfWork uowMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
+        
+        IProducts domainMock = (IProducts) mocks.mock(IProducts.class);        
+        IProductsSelector productsSelectorMock = (IProductsSelector) mocks.mock(IProductsSelector.class);
+        Id productId=fflib_IDGenerator.generate(Product2.sobjectType);
+        String jsonStr='';
+        
+        mocks.startStubbing();
+        List<Product2> productList=new List<Product2>{new Product2(Id=productId)};
+            Set<Id> productIdSet= new Map<Id,Product2>(productList).keySet();
+        mocks.when(domainMock.sObjectType()).thenReturn(Product2.SObjectType);
+        mocks.when(productsSelectorMock.sObjectType()).thenReturn(Product2.SObjectType);
+        mocks.when(productsSelectorMock.selectAvailableProducts()).thenReturn(productList);
+        mocks.when(productsSelectorMock.selectById(productIdSet)).thenReturn(productList);
+        mocks.when(domainMock.placeOrder(jsonStr,uowMock)).thenReturn(true);
+        mocks.stopStubbing();
+        
+        setDomainMock(domainMock);
+        Application.UnitOfWork.setMock(uowMock);
+        Application.Selector.setMock(productsSelectorMock);
+        Boolean isError=false;
+        Test.startTest();
+        try{
+            ((IShoppingCartService)Application.Service.newInstance(IShoppingCartService.class)).placeOrder(jsonStr);
+            
+        }catch(Exception ex){
+            isError=true;
+        }
+        Test.stopTest(); 
+        
+        System.assert(isError);
+        ((IProductsSelector)mocks.verify(productsSelectorMock,fflib_ApexMocks.NEVER)).selectById(productIdSet);
+        ((IProducts) mocks.verify(domainMock,fflib_ApexMocks.NEVER)).placeOrder(jsonStr,uowMock);
+        ((fflib_ISObjectUnitOfWork)mocks.verify(uowMock, fflib_ApexMocks.NEVER)).commitWork();        
+    }
+    
+    @IsTest
+    private static void calling_Service_Should_Call_Selector_DomainAndCommit(){         
+        
+        fflib_ApexMocks mocks = new fflib_ApexMocks();
+        fflib_ISObjectUnitOfWork uowMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
+        
+        IProducts domainMock = (IProducts) mocks.mock(IProducts.class);        
+        IProductsSelector productsSelectorMock = (IProductsSelector) mocks.mock(IProductsSelector.class);
+        Id productId=fflib_IDGenerator.generate(Product2.sobjectType);
+        String jsonStr='[{"Id":"'+productId+'","Name":"Large CloudyBot","Price__c":4000,"Units__c":1,"Total":4000}]';
+        
+        mocks.startStubbing();
+        List<Product2> productList=new List<Product2>{new Product2(Id=productId)};
+            Set<Id> productIdSet= new Map<Id,Product2>(productList).keySet();
+        mocks.when(domainMock.sObjectType()).thenReturn(Product2.SObjectType);
+        mocks.when(productsSelectorMock.sObjectType()).thenReturn(Product2.SObjectType);
+        mocks.when(productsSelectorMock.selectAvailableProducts()).thenReturn(productList);
+        mocks.when(productsSelectorMock.selectById(productIdSet)).thenReturn(productList);
+        mocks.when(domainMock.placeOrder(jsonStr,uowMock)).thenReturn(true);
+        mocks.stopStubbing();
+        
+        setDomainMock(domainMock);
+        Application.UnitOfWork.setMock(uowMock);
+        Application.Selector.setMock(productsSelectorMock);
+        Test.startTest();      
+        ((IShoppingCartService)Application.Service.newInstance(IShoppingCartService.class)).placeOrder(jsonStr);
+        Test.stopTest(); 
+        
+        ((IProductsSelector)mocks.verify(productsSelectorMock,1)).selectById(productIdSet);
+        ((IProducts) mocks.verify(domainMock,1)).placeOrder(jsonStr,uowMock);
+        ((fflib_ISObjectUnitOfWork)mocks.verify(uowMock, 1)).commitWork();
+        
+    }
+    
+    @IsTest
+    private static void calling_Service_Should_Call_Selector_SelectAvailableProducts(){      
+        
+        fflib_ApexMocks mocks = new fflib_ApexMocks();        
+        IProductsSelector productsSelectorMock = (IProductsSelector) mocks.mock(IProductsSelector.class);             
+        mocks.startStubbing();
+        Id productId=fflib_IDGenerator.generate(Product2.sobjectType);   
+        List<Product2> productList=new List<Product2>{new Product2(Id=productId)};
+            mocks.when(productsSelectorMock.sObjectType()).thenReturn(Product2.SObjectType);
+        mocks.when(productsSelectorMock.selectAvailableProducts()).thenReturn(productList);
+        mocks.stopStubbing();        
+        
+        Application.Selector.setMock(productsSelectorMock);
+        Test.startTest();
+        List<Product2> actualProductList=((IShoppingCartService)Application.Service.newInstance(IShoppingCartService.class)).getAvailableProducts();
+        Test.stopTest();        
+        
+        System.assertEquals(productList, actualProductList);            
+        ((IProductsSelector)mocks.verify(productsSelectorMock,1)).selectAvailableProducts();        
+    }
+    
+    @IsTest
+    private static void calling_Service_Should_Call_Selector_SelectAllPurchaseOrder(){  
+        
+        fflib_ApexMocks mocks = new fflib_ApexMocks();        
+        IPurchaseOrderSelector purchaseOrderSelectorMock = (IPurchaseOrderSelector) mocks.mock(IPurchaseOrderSelector.class); 
+        
+        mocks.startStubbing();
+        Id poId=fflib_IDGenerator.generate(PurchaseOrder__c.sobjectType);   
+        List<PurchaseOrder__c> poList=new List<PurchaseOrder__c>{new PurchaseOrder__c(Id=poId)};
+            mocks.when(purchaseOrderSelectorMock.sObjectType()).thenReturn(PurchaseOrder__c.SObjectType);
+        mocks.when(purchaseOrderSelectorMock.selectAllPurchaseOrder()).thenReturn(poList);
+        mocks.stopStubbing();        
+        
+        Application.Selector.setMock(purchaseOrderSelectorMock);
+        
+        Test.startTest();
+        List<PurchaseOrder__c> actualPOList=((IShoppingCartService)Application.Service.newInstance(IShoppingCartService.class)).getMyOrders();
+        Test.stopTest();        
+        
+        System.assertEquals(poList, actualPOList);            
+        ((IPurchaseOrderSelector)mocks.verify(purchaseOrderSelectorMock,1)).selectAllPurchaseOrder();        
+    }
+    
+    private static void setDomainMock(fflib_ISObjectDomain mockObj){
+        Application.Domain.setMock(mockObj);
+    }
+    
+}
