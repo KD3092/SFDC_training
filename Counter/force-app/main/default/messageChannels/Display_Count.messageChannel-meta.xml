@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>DisplayCount</masterLabel>
+    <isExposed>true</isExposed>
+    <description>Message Channel to pass Count</description>
+    <lightningMessageFields>
+         <fieldName>count</fieldName>
+        <description>This is the number count</description>
+     </lightningMessageFields>
+</LightningMessageChannel>
